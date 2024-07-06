@@ -25,7 +25,7 @@ app.use('/', router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Define HTTP server port
-const HTTP_PORT = process.env.HTTP_PORT || 3000;
+const HTTP_PORT = process.env.HTTP_PORT || 9098;
 
 // Start the HTTP server
 httpServer.listen(HTTP_PORT, () => {
