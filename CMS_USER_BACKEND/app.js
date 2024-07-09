@@ -11,6 +11,7 @@ dotenv.config();
 
 const home = require('./src/Home/routes.js');
 const wallet = require('./src/Wallet/routes.js');
+const sessionhistory = require('./src/SessionHistory/routes.js');
 const profile = require('./src/Profile/routes.js');
 
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 
 app.use('/', home);
 app.use('/wallet', wallet);
+app.use('/session', sessionhistory);
 app.use('/profile', profile);
 
 
