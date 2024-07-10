@@ -1,6 +1,7 @@
 const database = require('../../db');
 const logger = require('../../logger');
 
+//SESSION HISTORY
 async function getChargingSessionDetails(req, res) {
     try {
         const { username } = req.body;
@@ -28,6 +29,7 @@ async function getChargingSessionDetails(req, res) {
     }
 }
 
+//TOTAL SESSION DATA
 async function TotalSessionData(req, res) {
     try {
         const { username } = req.body;
@@ -70,6 +72,8 @@ async function TotalSessionData(req, res) {
 
 
 module.exports = {
+    //SESSION HISTORY
     getChargingSessionDetails,
+    //TOTAL SESSION DATA
     TotalSessionData,
 };

@@ -75,7 +75,6 @@ async function UpdateUserProfile(req, res, next) {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
-
 //DeActivate User
 async function DeActivateUser(req, res, next) {
     try {

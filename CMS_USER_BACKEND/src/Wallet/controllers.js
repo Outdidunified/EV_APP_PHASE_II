@@ -1,33 +1,7 @@
 const database = require('../../db');
 const logger = require('../../logger');
 
-//FetchWalletBalance
-async function FetchWalletBalance(req, res) {
-    const { user_id } = req.body;
-
-    try {
-        if (!user_id) {
-            return res.status(400).json({ message: 'User ID is required' });
-        }
-
-        const db = await database.connectToDatabase();
-        const usersCollection = db.collection("users");
-        
-        // Query to fetch the user by user_id
-        const user = await usersCollection.findOne({ user_id: user_id, status: true });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found or inactive' });
-        }
-
-        return res.status(200).json({ status: 'Success', data: user.wallet_bal });
-
-    } catch (error) {
-        console.error(`Error fetching wallet balance: ${error}`);
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-}
-
+//RECHARGE DATA
 // Save recharge details
 async function savePaymentDetails(data) {
     const db = await database.connectToDatabase();
@@ -72,6 +46,35 @@ async function savePaymentDetails(data) {
     }
 }
 
+//WALLET BALANCE
+//FetchWalletBalance
+async function FetchWalletBalance(req, res) {
+    const { user_id } = req.body;
+
+    try {
+        if (!user_id) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        const db = await database.connectToDatabase();
+        const usersCollection = db.collection("users");
+        
+        // Query to fetch the user by user_id
+        const user = await usersCollection.findOne({ user_id: user_id, status: true });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found or inactive' });
+        }
+
+        return res.status(200).json({ status: 'Success', data: user.wallet_bal });
+
+    } catch (error) {
+        console.error(`Error fetching wallet balance: ${error}`);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+//TRANSACTION HISTORY
 //getTransactionDetails
 async function getTransactionDetails(username) {
     try {
