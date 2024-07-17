@@ -4,7 +4,6 @@ const database = require('../../db');
 const authenticate = async (req) => {
     try {
         const { email_id, password } = req.body;
-        console.log(req.body)
         // Check if email or password is missing
         if (!email_id || !password) {
             return { error: true, status: 401, message: 'required data not found' };

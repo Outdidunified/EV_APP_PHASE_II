@@ -64,44 +64,8 @@ async function searchCharger(req, res) {
         return res.status(500).json({ message: errorMessage });
     }
 }
-//END CHARGING SESSION
-async function endChargingSession(req, res) {
-    try {
-        const { charger_id } = req.body;
-        const db = await database.connectToDatabase();
-        const chargerDetailsCollection = db.collection('charger_details');
-        const chargerStatusCollection = db.collection('charger_status');
 
-        const chargerStatus = await chargerStatusCollection.findOne({ charger_id: charger_id });
 
-        if (!chargerStatus) {
-            const errorMessage = 'Charger status not found!';
-            return res.status(404).json({ message: errorMessage });
-        }
-
-        if (['Available', 'Faulted', 'Finishing', 'Unavailable'].includes(chargerStatus.charger_status)) {
-            const result = await chargerDetailsCollection.updateOne(
-                { charger_id: charger_id },
-                { $set: { current_or_active_user: null } }
-            );
-
-            if (result.modifiedCount === 0) {
-                const errorMessage = 'Username not found to update end charging session';
-                return res.status(404).json({ message: errorMessage });
-            }
-
-            return res.status(200).json({ status: "Success", message: 'End Charging session updated successfully.' });
-        } else {
-            console.log("endChargingSession - Status is not in Available/Faulted/Finishing/Unavailable");
-            return res.status(200).json({ message: 'OK' });
-        }
-
-    } catch (error) {
-        console.error('Error updating end charging session:', error);
-        const errorMessage = 'Internal Server Error';
-        return res.status(500).json({ message: errorMessage });
-    }
-}
 
 //FILTER CHARGERS
 //getAvailableChargers
@@ -156,8 +120,6 @@ async function getRecentSessionDetails(req, res) {
 module.exports = { 
     //SEARCH CHARGER
     searchCharger,
-    //END CHARGING SESSION
-    endChargingSession,
     //FILTER CHARGERS
     getAvailableChargers,
     getRecentSessionDetails,

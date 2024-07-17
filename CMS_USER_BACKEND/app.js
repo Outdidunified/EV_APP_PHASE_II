@@ -10,6 +10,7 @@ app.use(cors());
 dotenv.config();
 
 const home = require('./src/Home/routes.js');
+const ChargingSession = require('./src/ChargingSession/routes.js');
 const wallet = require('./src/Wallet/routes.js');
 const sessionhistory = require('./src/SessionHistory/routes.js');
 const profile = require('./src/Profile/routes.js');
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 
 
 app.use('/', home);
+app.use('/charging', ChargingSession);
 app.use('/wallet', wallet);
 app.use('/session', sessionhistory);
 app.use('/profile', profile);
@@ -39,4 +41,33 @@ const HTTP_PORT = process.env.HTTP_PORT || 9098;
 httpServer.listen(HTTP_PORT, () => {
     console.log(`HTTP Server listening on port ${HTTP_PORT}`);
     logger.info(`HTTP Server listening on port ${HTTP_PORT}`);
+});
+
+const { initializeWebSocket } = require('./websocket');
+
+
+// Create a separate HTTP server for WebSocket
+const webSocketServer = http.createServer();
+const ClientWebSocketServer = http.createServer();
+
+
+// Initialize WebSocket connections and map modules on WebSocket server
+initializeWebSocket(webSocketServer, ClientWebSocketServer);
+
+// Define WebSocket server port
+const WS_PORT = process.env.WS_PORT || 8567;
+
+// Start the WebSocket server
+webSocketServer.listen(WS_PORT, () => {
+    console.log(`WebSocket Server listening on port ${WS_PORT}`);
+    logger.info(`WebSocket Server listening on port ${WS_PORT}`);
+});
+
+// Define client WebSocket server port
+const WS_PORT_CLIENT = process.env.WS_PORT_CLIENT || 8566;
+
+// Start the client WebSocket server
+ClientWebSocketServer.listen(WS_PORT_CLIENT, () => {
+    console.log(`Client WebSocket Server listening on port ${WS_PORT_CLIENT}`);
+    logger.info(`Client WebSocket Server listening on port ${WS_PORT_CLIENT}`);
 });
