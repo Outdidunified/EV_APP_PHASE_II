@@ -8424,3 +8424,801 @@
 17/07/2024 15:45:02 [INFO]: Client WebSocket Server listening on port 8566
 17/07/2024 15:45:15 [INFO]: WebSocket connection established with ODT00003
 17/07/2024 15:45:16 [INFO]: ChargerID: ODT00003 - Matched 1 document(s) and modified 0 document(s)
+17/07/2024 17:55:24 [INFO]: HTTP Server listening on port 9098
+17/07/2024 17:55:24 [INFO]: WebSocket Server listening on port 8567
+17/07/2024 17:55:24 [INFO]: Client WebSocket Server listening on port 8566
+17/07/2024 18:11:47 [INFO]: HTTP Server listening on port 9098
+17/07/2024 18:11:47 [INFO]: WebSocket Server listening on port 8567
+17/07/2024 18:11:47 [INFO]: Client WebSocket Server listening on port 8566
+17/07/2024 18:26:44 [INFO]: HTTP Server listening on port 9098
+17/07/2024 18:26:44 [INFO]: WebSocket Server listening on port 8567
+17/07/2024 18:26:44 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 11:50:26 [INFO]: HTTP Server listening on port 9098
+22/07/2024 11:50:26 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 11:50:26 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 12:33:08 [INFO]: HTTP Server listening on port 9098
+22/07/2024 12:33:08 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 12:33:08 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 16:00:38 [INFO]: HTTP Server listening on port 9098
+22/07/2024 16:00:38 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 16:00:38 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:47:38 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:47:38 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:47:38 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:50:51 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:50:51 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:50:51 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:51:21 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:51:21 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:51:21 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:51:56 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:51:56 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:51:56 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:52:18 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:52:18 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:52:18 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:52:42 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:52:42 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:52:42 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:53:22 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:53:22 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:53:22 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:53:35 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:53:35 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:53:35 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:53:55 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:53:55 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:53:55 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:55:13 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:55:13 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:55:13 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:55:26 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:55:26 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:55:26 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:55:35 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:55:35 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:55:35 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:56:37 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:56:37 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:56:37 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:57:32 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:57:32 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:57:32 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:57:41 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:57:41 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:57:41 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:57:59 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:57:59 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:57:59 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:58:33 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:58:33 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:58:33 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:58:41 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:58:41 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:58:41 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:59:21 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:59:21 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:59:21 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 17:59:53 [INFO]: HTTP Server listening on port 9098
+22/07/2024 17:59:53 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 17:59:53 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:00:36 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:00:36 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:00:36 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:00:47 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:00:47 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:00:47 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:01:52 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:01:52 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:01:52 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:02:24 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:02:24 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:02:24 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:04:32 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:04:32 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:04:32 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:34:11 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:34:11 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:34:11 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:35:09 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:35:09 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:35:09 [INFO]: Client WebSocket Server listening on port 8566
+22/07/2024 18:37:53 [INFO]: HTTP Server listening on port 9098
+22/07/2024 18:37:53 [INFO]: WebSocket Server listening on port 8567
+22/07/2024 18:37:53 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 10:19:59 [INFO]: HTTP Server listening on port 9098
+23/07/2024 10:19:59 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 10:19:59 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:06:38 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:06:38 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:06:38 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:21:10 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:21:10 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:21:10 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:22:38 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:22:38 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:22:38 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:23:45 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:23:45 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:23:45 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:24:13 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:24:13 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:24:13 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:29:55 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:29:55 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:29:55 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:31:03 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:31:03 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:31:03 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:32:02 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:32:02 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:32:02 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:32:12 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:32:12 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:32:12 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:32:20 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:32:20 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:32:20 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:32:34 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:32:34 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:32:34 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:33:27 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:33:27 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:33:27 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:33:50 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:33:50 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:33:50 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:34:02 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:34:02 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:34:02 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:34:21 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:34:21 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:34:21 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:34:36 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:34:36 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:34:36 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:36:20 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:36:20 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:36:20 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:44:03 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:44:03 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:44:03 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:44:18 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:44:18 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:44:18 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:45:44 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:45:44 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:45:44 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:47:47 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:47:47 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:47:47 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:49:47 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:49:47 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:49:47 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:50:05 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:50:05 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:50:05 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:52:00 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:52:00 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:52:00 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:52:50 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:52:50 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:52:50 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:53:36 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:53:36 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:53:36 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:54:03 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:54:03 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:54:03 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:55:26 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:55:26 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:55:26 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:56:05 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:56:05 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:56:05 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:57:21 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:57:21 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:57:21 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:57:59 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:57:59 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:57:59 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 11:58:10 [INFO]: HTTP Server listening on port 9098
+23/07/2024 11:58:10 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 11:58:10 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:02:48 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:02:48 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:02:48 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:02:54 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:02:54 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:02:54 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:03:31 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:03:31 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:03:31 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:04:13 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:04:13 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:04:13 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:07:55 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:07:55 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:07:55 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:21:59 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:21:59 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 1 document(s)
+23/07/2024 12:22:18 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T06:52:18.582Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:22:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T06:52:35.789Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:22:35 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:22:52 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 12:22:53 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T06:52:53.372Z","meterStart":1,"reservationId":0}]
+23/07/2024 12:25:32 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T06:55:32.202Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:25:32 [INFO]: Unhandled Rejection at:
+23/07/2024 12:25:32 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:40:07 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:40:07 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:40:07 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:40:07 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:40:07 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:41:03 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T07:11:03.821Z","meterStart":1,"reservationId":0}]
+23/07/2024 12:42:16 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:42:16 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:42:16 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:42:18 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:42:18 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:42:21 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:12:21.747Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:42:21 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:42:57 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:12:57.987Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:42:58 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:45:31 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:45:31 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:45:31 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:45:32 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:45:32 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:46:03 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:46:03 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:46:03 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:46:04 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:46:04 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:46:09 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:16:09.886Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:46:09 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:46:18 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:16:18.268Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:46:18 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:46:49 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 12:46:50 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T07:16:50.774Z","meterStart":1,"reservationId":0}]
+23/07/2024 12:47:05 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:17:05.353Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:47:05 [INFO]: Unhandled Rejection at:
+23/07/2024 12:47:05 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:47:33 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:47:33 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:47:33 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:47:33 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:47:33 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:47:41 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:17:41.684Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:47:41 [INFO]: Unhandled Rejection at:
+23/07/2024 12:47:41 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:47:59 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:47:59 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:47:59 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:48:00 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:48:00 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:48:03 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:18:03.238Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:48:03 [INFO]: Unhandled Rejection at:
+23/07/2024 12:48:03 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:48:14 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:48:14 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:48:14 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:48:14 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:48:14 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:48:15 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:18:15.237Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:48:15 [INFO]: Unhandled Rejection at:
+23/07/2024 12:48:15 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:52:24 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:52:24 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:52:24 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:52:25 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:52:25 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:52:34 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:22:34.217Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:52:34 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:52:37 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:22:37.600Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:52:37 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:52:42 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 12:52:43 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T07:22:43.234Z","meterStart":1,"reservationId":0}]
+23/07/2024 12:53:24 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T07:23:24.744Z","meterStart":1,"reservationId":0}]
+23/07/2024 12:53:28 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:23:28.526Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:53:28 [INFO]: Unhandled Rejection at:
+23/07/2024 12:53:28 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:53:35 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:53:35 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:53:35 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:53:35 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:53:35 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:59:18 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:59:18 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:59:18 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:59:19 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:59:19 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 12:59:22 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:29:22.418Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 12:59:22 [INFO]: Unhandled Rejection at:
+23/07/2024 12:59:22 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 12:59:58 [INFO]: HTTP Server listening on port 9098
+23/07/2024 12:59:58 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 12:59:58 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 12:59:59 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 12:59:59 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:00:00 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:30:00.890Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:00:00 [INFO]: Unhandled Rejection at:
+23/07/2024 13:00:00 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:00:38 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:00:38 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:00:38 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:00:38 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:00:38 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:00:50 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":1536248,"meterValue":[{"timestamp":"2024-07-23T07:30:50.148Z","sampledValue":[{"value":"2"}]}]}]
+23/07/2024 13:00:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":1536248,"meterValue":[{"timestamp":"2024-07-23T07:30:51.147Z","sampledValue":[{"value":"3"}]}]}]
+23/07/2024 13:00:52 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":1536248,"meterValue":[{"timestamp":"2024-07-23T07:30:52.651Z","sampledValue":[{"value":"4"}]}]}]
+23/07/2024 13:00:53 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":1536248,"meterValue":[{"timestamp":"2024-07-23T07:30:53.651Z","sampledValue":[{"value":"5"}]}]}]
+23/07/2024 13:00:54 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":1536248,"meterValue":[{"timestamp":"2024-07-23T07:30:54.653Z","sampledValue":[{"value":"6"}]}]}]
+23/07/2024 13:02:18 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:02:18 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:02:18 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:02:18 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:02:18 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:02:27 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:32:27.009Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:02:27 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:02:30 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:32:30.009Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:02:30 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:02:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 13:02:52 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T07:32:52.188Z","meterStart":6,"reservationId":0}]
+23/07/2024 13:02:58 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:32:58.470Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:02:58 [INFO]: Unhandled Rejection at:
+23/07/2024 13:02:58 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:05:58 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:05:58 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:05:58 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:05:59 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:05:59 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:06:01 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:36:01.402Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:06:01 [INFO]: Unhandled Rejection at:
+23/07/2024 13:06:01 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:09:10 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:09:10 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:09:10 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:09:11 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:09:11 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:13:08 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:13:08 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:13:08 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:13:08 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:13:08 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:13:51 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:13:51 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:13:51 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:13:52 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:13:52 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:14:12 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:44:12.225Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:14:12 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:14:14 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:44:14.908Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:14:14 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:14:27 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 13:14:28 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T07:44:28.320Z","meterStart":6,"reservationId":0}]
+23/07/2024 13:14:32 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:44:32.666Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:14:32 [INFO]: Unhandled Rejection at:
+23/07/2024 13:14:32 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:16:30 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:16:30 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:16:30 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:16:31 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:16:31 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:16:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T07:46:35.066Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 13:16:35 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 13:16:35 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 13:27:08 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:27:08 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:27:08 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:27:08 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:27:08 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:27:20 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:27:20 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:27:20 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:27:21 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:27:21 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:27:30 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:27:30 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:27:30 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:27:31 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:27:31 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:28:05 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:28:05 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:28:05 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:28:06 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:28:06 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:28:38 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:28:38 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:28:38 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:28:38 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:28:38 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:28:45 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:28:45 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:28:45 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:28:45 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:28:45 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:28:53 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:28:53 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:28:53 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:28:53 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:28:53 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:29:00 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:29:00 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:29:00 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:29:00 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:29:00 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:29:06 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:29:06 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:29:06 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:29:06 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:29:06 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:29:15 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:29:15 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:29:15 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:29:15 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:29:15 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:30:12 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:30:12 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:30:12 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:30:13 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:30:13 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:31:36 [INFO]: HTTP Server listening on port 9098
+23/07/2024 13:31:36 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 13:31:36 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 13:31:36 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:31:36 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 13:31:39 [ERROR]: ChargerID - ODT00001: WebSocket connection closed with code 1006 and reason: 
+23/07/2024 13:31:39 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 13:31:39 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 14:40:04 [INFO]: HTTP Server listening on port 9098
+23/07/2024 14:40:04 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 14:40:04 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 14:40:05 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 14:40:05 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 14:43:51 [INFO]: HTTP Server listening on port 9098
+23/07/2024 14:43:51 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 14:43:51 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 14:43:52 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 14:43:52 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 14:51:17 [INFO]: HTTP Server listening on port 9098
+23/07/2024 14:51:17 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 14:51:17 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 14:51:17 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 14:51:17 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 14:52:03 [INFO]: HTTP Server listening on port 9098
+23/07/2024 14:52:03 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 14:52:03 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 14:52:04 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 14:52:04 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 14:52:32 [INFO]: HTTP Server listening on port 9098
+23/07/2024 14:52:32 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 14:52:32 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 14:52:32 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 14:52:32 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 14:54:08 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:24:08.338Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 14:54:08 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 14:55:21 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:25:21.155Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 14:55:21 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 14:55:46 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 14:55:47 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T09:25:47.000Z","meterStart":6,"reservationId":0}]
+23/07/2024 14:56:14 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T09:26:14.539Z","meterStart":6,"reservationId":0}]
+23/07/2024 14:57:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:27:35.499Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 14:57:35 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 14:57:35 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:02:08 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:02:08 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:02:08 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:02:11 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:02:11 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:02:47 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:32:47.739Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:02:47 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:02:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:32:51.039Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:02:51 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:03:01 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:03:02 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T09:33:02.823Z","meterStart":6,"reservationId":0}]
+23/07/2024 15:03:09 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:33:09.956Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:03:10 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:03:10 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:05:48 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:05:48 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:05:48 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:05:49 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:05:49 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:16:34 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:46:34.514Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:16:34 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:16:41 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:46:41.030Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:16:41 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:16:44 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:16:45 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T09:46:45.579Z","meterStart":6,"reservationId":0}]
+23/07/2024 15:16:54 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:46:54.613Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:16:54 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:16:54 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:17:32 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":5904780,"meterValue":[{"timestamp":"2024-07-23T09:47:32.685Z","sampledValue":[{"value":"7"}]}]}]
+23/07/2024 15:17:33 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":5904780,"meterValue":[{"timestamp":"2024-07-23T09:47:33.686Z","sampledValue":[{"value":"8"}]}]}]
+23/07/2024 15:17:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":5904780,"meterValue":[{"timestamp":"2024-07-23T09:47:35.122Z","sampledValue":[{"value":"9"}]}]}]
+23/07/2024 15:17:36 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":5904780,"meterValue":[{"timestamp":"2024-07-23T09:47:36.122Z","sampledValue":[{"value":"10"}]}]}]
+23/07/2024 15:17:37 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","MeterValues",{"connectorId":1,"transactionId":5904780,"meterValue":[{"timestamp":"2024-07-23T09:47:37.122Z","sampledValue":[{"value":"11"}]}]}]
+23/07/2024 15:20:59 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:20:59 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:20:59 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:21:00 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:21:00 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:25:47 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:55:47.012Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:25:47 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:25:55 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:55:55.922Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:25:55 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:25:58 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:25:59 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T09:55:59.488Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:26:06 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T09:56:06.355Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:26:06 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:26:06 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:26:53 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:26:53 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:26:53 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:26:54 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:26:54 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:33:36 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:03:36.167Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:33:36 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:35:33 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:05:33.721Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:35:33 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:35:36 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:35:37 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:05:37.542Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:35:42 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:05:42.794Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:35:42 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:35:42 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:39:46 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:39:46 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:39:46 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:39:47 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:39:47 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:41:07 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:11:07.513Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:41:07 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:41:19 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:11:19.557Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:41:19 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:41:26 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:41:27 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:11:27.612Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:41:34 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:11:34.430Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:41:34 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:41:34 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:45:30 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:45:30 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:45:30 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:45:31 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:45:31 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:47:30 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:17:30.969Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:47:31 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:47:37 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:17:37.078Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:47:37 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:47:49 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:17:49.007Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:47:49 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:47:49 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:48:39 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:48:39 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:48:39 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:48:39 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:48:39 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:48:45 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:18:45.215Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:48:45 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:48:49 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:18:49.348Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:48:49 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:48:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:48:52 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:18:52.416Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:48:59 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:18:59.649Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:48:59 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:48:59 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:49:28 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:49:28 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:49:28 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:49:29 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:49:29 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:49:54 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:19:54.071Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:49:54 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:49:56 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:19:56.722Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:49:56 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:51:40 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:51:41 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:21:41.173Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:51:44 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:21:44.405Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:51:44 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:51:44 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:52:51 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:52:51 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:52:51 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:52:52 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:52:52 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:53:09 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:23:09.755Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:53:09 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:53:22 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:23:22.856Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:53:22 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:53:30 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:53:31 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:23:31.055Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:56:13 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:26:13.933Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:56:13 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:56:17 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:26:17.434Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:56:17 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:56:22 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:56:22 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:26:22.907Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:56:30 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:26:30.936Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:56:30 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:56:31 [INFO]: ChargerID ODT00001: Please add the chargerID in the database!
+23/07/2024 15:57:13 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:57:13 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:57:13 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:57:14 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:57:14 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:57:29 [INFO]: HTTP Server listening on port 9098
+23/07/2024 15:57:29 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 15:57:29 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 15:57:30 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 15:57:30 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 15:57:48 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:27:48.505Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:57:48 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:57:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:27:51.521Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:57:51 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:57:53 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:57:54 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:27:54.305Z","meterStart":11,"reservationId":0}]
+23/07/2024 15:57:57 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:27:57.288Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:57:57 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:57:57 [INFO]: ChargerID ODT00001: Session inserted
+23/07/2024 15:58:48 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 15:58:50 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StopTransaction",{"transactionId":2263733,"idTag":"TI12345","timestamp":"2024-07-23T10:28:50.071Z","meterStop":11}]
+23/07/2024 15:59:00 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Finishing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:29:00.999Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 15:59:01 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 15:59:01 [INFO]: ChargerID ODT00001: Session/StopTimestamp updated
+23/07/2024 16:00:27 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:00:27 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:00:27 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:00:28 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:00:28 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:00:45 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:30:45.737Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:00:45 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:00:49 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:30:49.271Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:00:49 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:00:50 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:00:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:30:51.504Z","meterStart":11,"reservationId":0}]
+23/07/2024 16:00:55 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:30:55.054Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:00:55 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:00:55 [INFO]: ChargerID ODT00001: Session inserted
+23/07/2024 16:01:38 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:01:38 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:01:38 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:01:38 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:01:39 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:01:44 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:01:45 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StopTransaction",{"transactionId":3744679,"idTag":"TI12345","timestamp":"2024-07-23T10:31:45.318Z","meterStop":11}]
+23/07/2024 16:01:56 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Finishing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:31:56.351Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:01:56 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:02:40 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:02:40 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:02:40 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:02:41 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:02:41 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:02:48 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:32:48.709Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:02:48 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:02:53 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:32:53.558Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:02:53 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:02:55 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:02:56 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:32:56.209Z","meterStart":11,"reservationId":0}]
+23/07/2024 16:02:58 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:32:58.942Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:02:59 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:02:59 [INFO]: ChargerID ODT00001: Session inserted
+23/07/2024 16:10:01 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:10:01 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:10:01 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:10:02 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:10:02 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:10:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:40:35.323Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:10:35 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:10:38 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:40:38.356Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:10:38 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:10:40 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:12:49 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:12:49 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:12:49 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:12:50 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:12:50 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:14:48 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:44:48.117Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:14:48 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:20:02 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"tkMvS8tx0OzoaXcKz7ulGeYlMP0BHL3VWU49","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:50:02.712Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:20:02 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:20:14 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [3,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65",{"status":"Accepted"}]
+23/07/2024 16:20:14 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:50:14.993Z","meterStart":11,"reservationId":0}]
+23/07/2024 16:20:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:20:36 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:50:36.146Z","meterStart":11,"reservationId":0}]
+23/07/2024 16:21:25 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:51:25.627Z","meterStart":11,"reservationId":0}]
+23/07/2024 16:21:46 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:51:46.568Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:21:46 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:21:46 [INFO]: ChargerID ODT00001: Session inserted
+23/07/2024 16:23:08 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","MeterValues",{"connectorId":1,"transactionId":1338684,"meterValue":[{"timestamp":"2024-07-23T10:53:08.341Z","sampledValue":[{"value":"12"}]}]}]
+23/07/2024 16:23:10 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","MeterValues",{"connectorId":1,"transactionId":1338684,"meterValue":[{"timestamp":"2024-07-23T10:53:10.129Z","sampledValue":[{"value":"13"}]}]}]
+23/07/2024 16:23:11 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","MeterValues",{"connectorId":1,"transactionId":1338684,"meterValue":[{"timestamp":"2024-07-23T10:53:11.129Z","sampledValue":[{"value":"14"}]}]}]
+23/07/2024 16:23:12 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","MeterValues",{"connectorId":1,"transactionId":1338684,"meterValue":[{"timestamp":"2024-07-23T10:53:12.129Z","sampledValue":[{"value":"15"}]}]}]
+23/07/2024 16:23:13 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"3fd35b18-62b9-4423-b9c1-4ecf1d61bd65","MeterValues",{"connectorId":1,"transactionId":1338684,"meterValue":[{"timestamp":"2024-07-23T10:53:13.129Z","sampledValue":[{"value":"16"}]}]}]
+23/07/2024 16:23:22 [ERROR]: ChargerID: ODT00001 - Transaction ID not set or not available: ReferenceError: TagID is not defined
+23/07/2024 16:24:43 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:24:43 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:24:43 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:24:44 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:24:44 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:24:53 [ERROR]: ChargerID: ODT00001 - Transaction ID not set or not available: TypeError: Cannot read properties of undefined (reading 'toISOString')
+23/07/2024 16:25:11 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:25:11 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:25:11 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:25:12 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:25:12 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:25:13 [INFO]: Stop message sent to the WebSocket client for device ID:
+23/07/2024 16:25:13 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [3,null,{"status":"Accepted"}]
+23/07/2024 16:25:13 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,null,"StopTransaction",{"transactionId":1338684,"idTag":"TI12345","timestamp":"2024-07-23T10:55:13.980Z","meterStop":16}]
+23/07/2024 16:25:47 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:25:47 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:25:47 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:25:48 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:25:48 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:26:15 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,null,"StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:56:15.546Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:26:15 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:26:26 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,null,"StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:56:26.658Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:26:26 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:26:30 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [3,"bcf942b1-91c3-4ea8-b6d4-38713cc97d27",{"status":"Accepted"}]
+23/07/2024 16:26:30 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"bcf942b1-91c3-4ea8-b6d4-38713cc97d27","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T10:56:30.043Z","meterStart":16,"reservationId":0}]
+23/07/2024 16:26:43 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"bcf942b1-91c3-4ea8-b6d4-38713cc97d27","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:56:43.309Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:26:43 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:26:43 [INFO]: ChargerID ODT00001: Session inserted
+23/07/2024 16:27:03 [INFO]: Stop message sent to the WebSocket client for device ID:
+23/07/2024 16:27:03 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [3,"TI12345",{"status":"Accepted"}]
+23/07/2024 16:27:03 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StopTransaction",{"transactionId":7043494,"idTag":"TI12345","timestamp":"2024-07-23T10:57:03.224Z","meterStop":16}]
+23/07/2024 16:29:42 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StopTransaction",{"transactionId":7043494,"idTag":"TI12345","timestamp":"2024-07-23T10:59:42.761Z","meterStop":16}]
+23/07/2024 16:29:51 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StatusNotification",{"connectorId":1,"status":"Finishing","errorCode":"NoError","info":"","timestamp":"2024-07-23T10:59:51.527Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:29:51 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:29:51 [INFO]: ChargerID ODT00001: Session/StopTimestamp updated
+23/07/2024 16:31:31 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StatusNotification",{"connectorId":1,"status":"Available","errorCode":"NoError","info":"","timestamp":"2024-07-23T11:01:31.796Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:31:31 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:31:43 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StatusNotification",{"connectorId":1,"status":"Preparing","errorCode":"NoError","info":"","timestamp":"2024-07-23T11:01:43.913Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:31:44 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:31:52 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [3,"2ff83419-3de2-4085-bedf-275185dfd045",{"status":"Accepted"}]
+23/07/2024 16:31:52 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"2ff83419-3de2-4085-bedf-275185dfd045","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T11:01:52.372Z","meterStart":16,"reservationId":0}]
+23/07/2024 16:32:04 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"2ff83419-3de2-4085-bedf-275185dfd045","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:32:06 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"2ff83419-3de2-4085-bedf-275185dfd045","StartTransaction",{"connectorId":1,"idTag":"TI12345","timestamp":"2024-07-23T11:02:06.197Z","meterStart":16,"reservationId":0}]
+23/07/2024 16:32:08 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"2ff83419-3de2-4085-bedf-275185dfd045","StatusNotification",{"connectorId":1,"status":"Charging","errorCode":"NoError","info":"","timestamp":"2024-07-23T11:02:08.129Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:32:08 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:32:08 [INFO]: ChargerID ODT00001: Session inserted
+23/07/2024 16:32:24 [INFO]: Stop message sent to the WebSocket client for device ID:
+23/07/2024 16:32:24 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [3,"TI12345",{"status":"Accepted"}]
+23/07/2024 16:32:24 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StopTransaction",{"transactionId":2687995,"idTag":"TI12345","timestamp":"2024-07-23T11:02:24.265Z","meterStop":16}]
+23/07/2024 16:32:28 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","Authorize",{"idTag":"TI12345"}]
+23/07/2024 16:32:29 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StopTransaction",{"transactionId":2687995,"idTag":"TI12345","timestamp":"2024-07-23T11:02:29.463Z","meterStop":16}]
+23/07/2024 16:32:35 [INFO]: ChargerID: ODT00001 - ReceivedMessage: [2,"TI12345","StatusNotification",{"connectorId":1,"status":"Finishing","errorCode":"NoError","info":"","timestamp":"2024-07-23T11:02:35.296Z","vendorId":"","vendorErrorCode":""}]
+23/07/2024 16:32:35 [INFO]: ChargerID ODT00001: Status successfully updated.
+23/07/2024 16:32:35 [INFO]: ChargerID ODT00001: Session/StopTimestamp updated
+23/07/2024 16:36:36 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:36:36 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:36:36 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:36:36 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:36:36 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:36:58 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:36:58 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:36:58 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:36:58 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:36:58 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:38:46 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:38:46 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:38:46 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:38:46 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:38:46 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:43:58 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:43:58 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:43:58 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:43:59 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:43:59 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:44:23 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:44:23 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:44:23 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:44:24 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:44:24 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:44:43 [INFO]: HTTP Server listening on port 9098
+23/07/2024 16:44:43 [INFO]: WebSocket Server listening on port 8567
+23/07/2024 16:44:43 [INFO]: Client WebSocket Server listening on port 8566
+23/07/2024 16:44:44 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:44:44 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)
+23/07/2024 16:50:11 [ERROR]: ChargerID - ODT00001: WebSocket connection closed with code 1006 and reason: 
+23/07/2024 16:50:11 [INFO]: WebSocket connection established with ODT00001
+23/07/2024 16:50:11 [INFO]: ChargerID: ODT00001 - Matched 1 document(s) and modified 0 document(s)

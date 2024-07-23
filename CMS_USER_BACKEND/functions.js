@@ -32,27 +32,6 @@ async function savePaymentDetails(data) {
     }
 }
 
-async function getAutostop(user){
-    try{
-        const db = await database.connectToDatabase();
-        const autoTimeVal = await db.collection('users').findOne({ username: user });
-        
-        const time_val = autoTimeVal.autostop_time;
-        const isTimeChecked = autoTimeVal.autostop_time_is_checked;
-        const unit_val = autoTimeVal.autostop_unit;
-        const isUnitChecked = autoTimeVal.autostop_unit_is_checked;
-        const price_val = autoTimeVal.autostop_price;
-        const isPriceChecked = autoTimeVal.autostop_price_is_checked;
-
-        console.log(`getAutostop_time: ${time_val} & ${isTimeChecked}, getAutostop_unit: ${unit_val} & ${isUnitChecked}, getAutostop_price: ${price_val} & ${isPriceChecked}`);
-
-        return { 'time_value': time_val, 'isTimeChecked': isTimeChecked, 'unit_value': unit_val, 'isUnitChecked': isUnitChecked, 'price_value': price_val, 'isPriceChecked': isPriceChecked };
-
-    }catch(error){
-        console.error(error);
-        return false;
-    }
-}
 
 // Fetch ip and update user
 async function getIpAndupdateUser(chargerID, user) {
@@ -100,7 +79,7 @@ async function SaveChargerStatus(chargerStatus) {
         .then(existingDocument => {
             if (existingDocument) {
                 // Update the existing document
-                collection.updateOne({ client_ip: ChargerStatus.client_ip }, { $set: { charger_status: ChargerStatus.charger_status, timestamp: new Date(chargerStatus.timestamp), error_code: ChargerStatus.error_code, modified_date : new Date() } })
+                collection.updateOne({ charger_id: ChargerStatus.charger_id }, { $set: { client_ip: ChargerStatus.client_ip,  charger_status: ChargerStatus.charger_status, timestamp: new Date(chargerStatus.timestamp), error_code: ChargerStatus.error_code, modified_date : new Date() } })
                     .then(result => {
                         if (result) {
                             console.log(`ChargerID ${ChargerStatus.charger_id}: Status successfully updated.`);
@@ -151,6 +130,7 @@ async function SaveChargerValue(ChargerVal) {
     const db = await connectToDatabase();
     const collection = db.collection('charger_meter_values');
     const ChargerValue = JSON.parse(ChargerVal);
+    console.log(ChargerValue)
 
     await db.collection('charger_details').findOne({ charger_id: ChargerValue.charger_id })
         .then(foundDocument => {
@@ -240,105 +220,107 @@ async function updateTime(charger_id) {
 }
 
 //insert charging session into the database
-async function handleChargingSession(chargerID, startTime, stopTime, Unitconsumed, Totalprice, user, SessionID) {
+async function handleChargingSession(charger_id, startTime, stopTime, Unitconsumed, Totalprice, user, SessionID) {
     const db = await connectToDatabase();
-    const collection = db.collection('charging_session');
+    const collection = db.collection('device_session_details');
     let TotalUnitConsumed;
-
     if (Unitconsumed === null || isNaN(parseFloat(Unitconsumed))) {
         TotalUnitConsumed = "0.000";
     } else {
         TotalUnitConsumed = Unitconsumed;
     }
     const sessionPrice = isNaN(Totalprice) || Totalprice === 'NaN' ? "0.00" : parseFloat(Totalprice).toFixed(2);
-    // const sessionPrice = parseFloat(price).toFixed(2);
     console.log(`Start: ${startTime}, Stop: ${stopTime}, Unit: ${TotalUnitConsumed}, Price: ${sessionPrice}`);
+    console.log(user)
     // Check if a document with the same chargerID already exists in the charging_session table
     const existingDocument = await collection
-        .find({ ChargerID: chargerID, ChargingSessionID: SessionID })
+        .find({ charger_id: charger_id, session_id: SessionID })
         .sort({ _id: -1 })
         .limit(1)
         .next();
-        console.log(`TableCheck: ${JSON.stringify(existingDocument)}`);
+    console.log(`TableCheck: ${JSON.stringify(existingDocument)}`);
+
     if (existingDocument) {
-        // ChargerID exists in charging_session table
-        if (existingDocument.StopTimestamp === null) {
-            // StopTimestamp is null, update the existing document's StopTimestamp
-            const result = await collection.updateOne({ ChargerID: chargerID, ChargingSessionID: SessionID, StopTimestamp: null }, {
+        if (existingDocument.stop_time === null) {
+            const result = await collection.updateOne({ charger_id: charger_id, session_id: SessionID, stop_time: null }, {
                 $set: {
-                    StopTimestamp: stopTime !== null ? stopTime : undefined,
-                    Unitconsumed: TotalUnitConsumed,
+                    stop_time: stopTime !== null ? stopTime : undefined,
+                    unit_consummed: TotalUnitConsumed,
                     price: sessionPrice,
                     user: user
                 }
             });
 
             if (result.modifiedCount > 0) {
-                console.log(`ChargerID ${chargerID}: Session/StopTimestamp updated`);
-                logger.info(`ChargerID ${chargerID}: Session/StopTimestamp updated`);
+                console.log(`ChargerID ${charger_id}: Session/StopTimestamp updated`);
+                logger.info(`ChargerID ${charger_id}: Session/StopTimestamp updated`);
                 const SessionPriceToUser = await updateSessionPriceToUser(user, sessionPrice);
                 if (SessionPriceToUser === true) {
-                    console.log(`ChargerID - ${chargerID}: Session Price updated for ${user}`);
+                    console.log(`ChargerID - ${charger_id}: Session Price updated for ${user}`);
                 } else {
-                    console.log(`ChargerID - ${chargerID}: Session Price Not updated for ${user}`);
+                    console.log(`ChargerID - ${charger_id}: Session Price Not updated for ${user}`);
                 }
             } else {
-                console.log(`ChargerID ${chargerID}: Session/StopTimestamp not updated`);
-                logger.info(`ChargerID ${chargerID}: Session/StopTimestamp not updated`);
+                console.log(`ChargerID ${charger_id}: Session/StopTimestamp not updated`);
+                logger.info(`ChargerID ${charger_id}: Session/StopTimestamp not updated`);
             }
         } else {
-
             const newSession = {
-                ChargerID: chargerID,
-                ChargingSessionID: SessionID,
-                StartTimestamp: startTime !== null ? startTime : undefined,
-                StopTimestamp: stopTime !== null ? stopTime : undefined,
-                Unitconsumed: TotalUnitConsumed,
+                charger_id: charger_id,
+                session_id: SessionID,
+                start_time: startTime !== null ? startTime : undefined,
+                stop_time: stopTime !== null ? stopTime : undefined,
+                unit_consummed: TotalUnitConsumed,
                 price: sessionPrice,
-                user: user
+                user: user,
+                created_date: new Date()
             };
 
             const result = await collection.insertOne(newSession);
 
             if (result.acknowledged === true) {
-                console.log(`ChargerID ${chargerID}: Session/StartTimestamp inserted`);
-                logger.info(`ChargerID ${chargerID}: Session/StartTimestamp inserted`);
+                console.log(`ChargerID ${charger_id}: Session/StartTimestamp inserted`);
+                logger.info(`ChargerID ${charger_id}: Session/StartTimestamp inserted`);
             } else {
-                console.log(`ChargerID ${chargerID}: Session/StartTimestamp not inserted`);
-                logger.info(`ChargerID ${chargerID}: Session/StartTimestamp not inserted`);
+                console.log(`ChargerID ${charger_id}: Session/StartTimestamp not inserted`);
+                logger.info(`ChargerID ${charger_id}: Session/StartTimestamp not inserted`);
             }
-
         }
     } else {
-        // ChargerID is not in charging_session table, insert a new document
-        const evDetailsDocument = await db.collection('ev_details').findOne({ ChargerID: chargerID });
+        // ChargerID is not in device_session_details table, insert a new document
+        try {
+            const evDetailsDocument = await db.collection('charger_details').findOne({ charger_id: charger_id });
+            if (evDetailsDocument) {
+                const newSession = {
+                    charger_id: charger_id,
+                    session_id: SessionID,
+                    start_time: startTime !== null ? startTime : undefined,
+                    stop_time: stopTime !== null ? stopTime : undefined,
+                    unit_consummed: TotalUnitConsumed,
+                    price: sessionPrice,
+                    user: user,
+                    created_date: new Date()
+                };
 
-        if (evDetailsDocument) {
-            const newSession = {
-                ChargerID: chargerID,
-                ChargingSessionID: SessionID,
-                StartTimestamp: startTime !== null ? startTime : undefined,
-                StopTimestamp: stopTime !== null ? stopTime : undefined,
-                Unitconsumed: TotalUnitConsumed,
-                price: sessionPrice,
-                user: user
-            };
-
-            const result = await collection.insertOne(newSession);
-
-            if (result.acknowledged === true) {
-                console.log(`ChargerID ${chargerID}: Session inserted`);
-                logger.info(`ChargerID ${chargerID}: Session inserted`);
+                const result = await collection.insertOne(newSession);
+                console.log(result)
+                if (result.acknowledged === true) {
+                    console.log(`ChargerID ${charger_id}: Session inserted`);
+                    logger.info(`ChargerID ${charger_id}: Session inserted`);
+                } else {
+                    console.log(`ChargerID ${charger_id}: Session not inserted`);
+                    logger.info(`ChargerID ${charger_id}: Session not inserted`);
+                }
             } else {
-                console.log(`ChargerID ${chargerID}: Session not inserted`);
-                logger.info(`ChargerID ${chargerID}: Session not inserted`);
+                console.log(`ChargerID ${charger_id}: Please add the chargerID in the database!`);
+                logger.info(`ChargerID ${charger_id}: Please add the chargerID in the database!`);
             }
-        } else {
-            console.log(`ChargerID ${chargerID}: Please add the chargerID in the database!`);
-            logger.info(`ChargerID ${chargerID}: Please add the chargerID in the database!`);
+        } catch (error) {
+            console.error(`Error querying device_session_details: ${error.message}`);
         }
     }
 }
+
 
 //update charging session with user
 async function updateSessionPriceToUser(user, price) {
@@ -499,4 +481,179 @@ async function checkAuthorization(charger_id, idTag) {
     }
 }
 
-module.exports = { savePaymentDetails, getIpAndupdateUser, generateRandomTransactionId, SaveChargerStatus, SaveChargerValue, updateTime, handleChargingSession, updateCurrentOrActiveUserToNull, getAutostop , updateChargerDetails, checkChargerIdInDatabase, checkChargerTagId, checkAuthorization, UpdateInUse};
+// Function to calculate the difference between two sets of MeterValues
+async function calculateDifference(startValues, lastValues,uniqueIdentifier) {
+    const startEnergy = startValues || 0;
+    const lastEnergy = lastValues || 0;
+    console.log(startEnergy, lastEnergy);
+    const differ = lastEnergy - startEnergy;
+    let calculatedUnit = parseFloat(differ / 1000).toFixed(3);
+    let unit;
+    if (calculatedUnit === null || isNaN(parseFloat(calculatedUnit))) {
+        unit = 0;
+    } else {
+        unit = calculatedUnit;
+    }
+    console.log(`Unit: ${unit}`);
+    const sessionPrice = await calculatePrice(unit, uniqueIdentifier);
+    const formattedSessionPrice = isNaN(sessionPrice) || sessionPrice === 'NaN' ? 0 : parseFloat(sessionPrice).toFixed(2);
+    return { unit, sessionPrice: formattedSessionPrice };
+}
+
+async function getUsername(chargerID) {
+    try {
+        const db = await connectToDatabase();
+        const evDetailsCollection = db.collection('charger_details');
+        const chargerDetails = await evDetailsCollection.findOne({ charger_id: chargerID });
+        if (!chargerDetails) {
+            console.log('getUsername - Charger ID not found in the database');
+        }
+        if (!chargerDetails) {
+            console.log('getUsername - Charger ID not found in the database');
+        }
+        const username = chargerDetails.current_or_active_user;
+        return username;
+    } catch (error) {
+        console.error('Error getting username:', error);
+    }
+}
+async function getAutostop(user){
+    try{
+        const db = await database.connectToDatabase();
+        const autoTimeVal = await db.collection('users').findOne({ username: user });
+        
+        const time_val = autoTimeVal.autostop_time;
+        const isTimeChecked = autoTimeVal.autostop_time_is_checked;
+        const unit_val = autoTimeVal.autostop_unit;
+        const isUnitChecked = autoTimeVal.autostop_unit_is_checked;
+        const price_val = autoTimeVal.autostop_price;
+        const isPriceChecked = autoTimeVal.autostop_price_is_checked;
+
+        console.log(`getAutostop_time: ${time_val} & ${isTimeChecked}, getAutostop_unit: ${unit_val} & ${isUnitChecked}, getAutostop_price: ${price_val} & ${isPriceChecked}`);
+
+        return { 'time_value': time_val, 'isTimeChecked': isTimeChecked, 'unit_value': unit_val, 'isUnitChecked': isUnitChecked, 'price_value': price_val, 'isPriceChecked': isPriceChecked };
+
+    }catch(error){
+        console.error(error);
+        return false;
+    }
+}
+
+
+async function captureMetervalues(Identifier, requestData, uniqueIdentifier, UniqueChargingsessionId) {
+    const sendTo = wsConnections.get(uniqueIdentifier);
+    const response = [3, Identifier, {}];
+    sendTo.send(JSON.stringify(response));
+
+    let measurand;
+    let value;
+    let EnergyValue;
+
+    const meterValueArray = requestData[3].meterValue[0].sampledValue;
+    const keyValuePair = {};
+    meterValueArray.forEach((sampledValue) => {
+        measurand = sampledValue.measurand;
+        value = sampledValue.value;
+        keyValuePair[measurand] = value;
+        if (measurand === 'Energy.Active.Import.Register') {
+            EnergyValue = value;
+        }
+    });
+
+    const currentTime = new Date().toISOString();
+    keyValuePair.timestamp = currentTime;
+    keyValuePair.client_ip = clientIpAddress;
+    keyValuePair.session_id = UniqueChargingsessionId;
+    keyValuePair.created_date = currentTime;
+
+    const ChargerValue = JSON.stringify(keyValuePair);
+    await SaveChargerValue(ChargerValue);
+    await updateTime(uniqueIdentifier);
+    if (keyValuePair['Energy.Active.Import.Register'] !== undefined) {
+        return EnergyValue;
+    }
+    return undefined;
+}
+
+async function autostop_unit(firstMeterValues,lastMeterValues,autostopSettings,uniqueIdentifier){
+
+    const startEnergy = firstMeterValues || 0;
+    const lastEnergy = lastMeterValues || 0;
+    
+    const result = lastEnergy - startEnergy;
+    let calculatedUnit = parseFloat(result / 1000).toFixed(3);
+
+    console.dir(autostopSettings);
+    console.log(`${autostopSettings.unit_value},${calculatedUnit}`);
+
+    if (autostopSettings.unit_value && autostopSettings.isUnitChecked === true) {
+        if(autostopSettings.unit_value <= calculatedUnit){
+            console.log(`Charger ${uniqueIdentifier} stop initiated - auto stop unit`);
+            const ip = await getIpAndupdateUser(uniqueIdentifier);
+            const result = await chargerStopCall(uniqueIdentifier, ip);
+            if (result === true) {
+                console.log(`AutoStop unit: Charger Stopped !`);
+            } else {
+                console.log(`Error: ${result}`);
+            }
+        }
+    }
+
+    console.log(`${lastEnergy} - ${startEnergy} - ${result}`);
+}
+
+async function autostop_price(firstMeterValues,lastMeterValues,autostopSettings,uniqueIdentifier){
+
+    const startEnergy = firstMeterValues || 0;
+    const lastEnergy = lastMeterValues || 0;
+    let unit;
+    
+    const result = lastEnergy - startEnergy;
+    let calculatedUnit = parseFloat(result / 1000).toFixed(3);
+
+    if (calculatedUnit === null || isNaN(calculatedUnit)) {
+        unit = 0;
+    } else {
+        unit = calculatedUnit;
+    }
+    console.log(`Unit: ${unit}`);
+    const sessionPrice = await calculatePrice(unit, uniqueIdentifier);
+    const formattedSessionPrice = isNaN(sessionPrice) || sessionPrice === 'NaN' ? 0 : parseFloat(sessionPrice).toFixed(2);
+    
+
+    console.log(`${autostopSettings.price_value} - ${formattedSessionPrice}`);
+
+    if (autostopSettings.price_value && autostopSettings.isPriceChecked === true) {
+        if(autostopSettings.price_value <= formattedSessionPrice){
+            console.log(`Charger ${uniqueIdentifier} stop initiated - auto stop price`);
+            const ip = await getIpAndupdateUser(uniqueIdentifier);
+            const result = await chargerStopCall(uniqueIdentifier, ip);
+            if (result === true) {
+                console.log(`AutoStop price: Charger Stopped !`);
+            } else {
+                console.log(`Error: ${result}`);
+            }
+        }
+    }
+}
+
+module.exports = {  savePaymentDetails, 
+                    getIpAndupdateUser, 
+                    generateRandomTransactionId, 
+                    SaveChargerStatus, 
+                    SaveChargerValue, 
+                    updateTime, 
+                    updateCurrentOrActiveUserToNull, 
+                    getAutostop ,
+                    updateChargerDetails, 
+                    checkChargerIdInDatabase, 
+                    checkChargerTagId,
+                    checkAuthorization,
+                    UpdateInUse, 
+                    calculateDifference,
+                    handleChargingSession, 
+                    getUsername,
+                    captureMetervalues,
+                    autostop_unit,
+                    autostop_price,
+                };

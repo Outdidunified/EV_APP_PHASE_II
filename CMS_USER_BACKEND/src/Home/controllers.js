@@ -88,6 +88,7 @@ async function getAvailableChargers(req, res) {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+
 //getRecentSessionDetails
 async function getRecentSessionDetails(req, res) {
     try {
@@ -96,19 +97,30 @@ async function getRecentSessionDetails(req, res) {
             const errorMessage = 'ChargerSessionDetails - Username undefined!';
             return res.status(401).json({ message: errorMessage });
         }
-
         const db = await database.connectToDatabase();
         const collection = db.collection('device_session_details');
 
         // Fetch all charging sessions for the user
-        const result = await collection.find({ user: username, stop_time: { $ne: null } }).sort({ stop_time: -1 }).toArray();
-        if (!result || result.length === 0) {
+        const sessions = await collection.find({ user: username, stop_time: { $ne: null } }).sort({ stop_time: -1 }).toArray();
+
+        if (!sessions || sessions.length === 0) {
             const errorMessage = 'ChargerSessionDetails - No record found!';
             return res.status(404).json({ message: errorMessage });
         }
 
-        // Return all session data
-        return res.status(200).json({ data: result });
+        // Filter to get the most recent session per charger_id
+        const recentSessionsByCharger = sessions.reduce((acc, session) => {
+            if (!acc[session.charger_id] || new Date(acc[session.charger_id].stop_time) < new Date(session.stop_time)) {
+                acc[session.charger_id] = session;
+            }
+            return acc;
+        }, {});
+
+        // Convert the result object to an array
+        const recentSessions = Object.values(recentSessionsByCharger);
+
+        // Return the most recent session data for each charger
+        return res.status(200).json({ data: recentSessions });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: 'Internal Server Error' });

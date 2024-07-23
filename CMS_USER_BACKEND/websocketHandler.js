@@ -1,6 +1,7 @@
 const logger = require('./logger');
 const { connectToDatabase } = require('./db');
-const { generateRandomTransactionId, SaveChargerStatus, updateTime, updateCurrentOrActiveUserToNull,getAutostop,getIpAndupdateUser , updateChargerDetails, checkChargerIdInDatabase, checkChargerTagId, checkAuthorization, SaveChargerValue, UpdateInUse} = require('./functions');
+const { generateRandomTransactionId, SaveChargerStatus, updateTime, updateCurrentOrActiveUserToNull,handleChargingSession,getUsername , updateChargerDetails, checkChargerIdInDatabase, checkChargerTagId, checkAuthorization, calculateDifference, UpdateInUse, getAutostop, captureMetervalues, autostop_unit,autostop_price} = require('./functions');
+const Chargercontrollers = require("./src/ChargingSession/controllers.js");
 
 const PING_INTERVAL = 60000; // 30 seconds ping interval
 
@@ -15,7 +16,8 @@ const getUniqueIdentifierFromRequest = async (request, ws) => {
 
     const identifier = urlParts.pop();
     if ((firstPart === 'EvPower' && secondPart === 'websocket' && thirdPart === 'CentralSystemService') ||
-        (firstPart === 'steve' && secondPart === 'websocket' && thirdPart === 'CentralSystemService')) {
+        (firstPart === 'steve' && secondPart === 'websocket' && thirdPart === 'CentralSystemService') ||
+        (firstPart === 'OCPPJ')) {
         
         // Validate the request method is GET
         if (request.method !== 'GET') {
@@ -56,7 +58,7 @@ const getUniqueIdentifierFromRequest = async (request, ws) => {
 };
 
 
-const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, ClientConnections, clients, sessionFlags, charging_states, startedChargingSet, chargingSessionID, meterValuesMap) => {
+const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, ClientConnections, clients, OCPPResponseMap, meterValuesMap, sessionFlags, charging_states, startedChargingSet, chargingSessionID) => {
     wss.on('connection', async (ws, req) => {
         // Initialize the isAlive property to true
         ws.isAlive = true;
@@ -67,6 +69,11 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
 
         const clientIpAddress = req.connection.remoteAddress;
         let timeoutId;
+        let GenerateChargingSessionID;
+        let StartTimestamp = null;
+        let StopTimestamp = null;
+        let timestamp;
+        let autoStopTimer; // Initialize a variable to hold the timeout reference
 
         const previousResults = new Map(); //updateTime - store previous result value
         const currentVal = new Map(); //updateTime - store current result value
@@ -105,7 +112,14 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
             console.log(`WebSocket connection established from browser`);
             logger.info(`WebSocket connection established from browser`);
         }
- 
+
+        const getMeterValues = (uniqueIdentifier) => {
+            if (!meterValuesMap.has(uniqueIdentifier)) {
+                meterValuesMap.set(uniqueIdentifier, {});
+            }
+            console.log(meterValuesMap.get(uniqueIdentifier))
+            return meterValuesMap.get(uniqueIdentifier);
+        };
 
         // Function to handle WebSocket messages
         function connectWebSocket() {
@@ -123,66 +137,11 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                 const currentDate = new Date();
                 const formattedDate = currentDate.toISOString();
 
-                if (requestData[0] === 3 && requestData[2].action === 'DataTransfer') {//DataTransfer
-                    const data = requestData[3]; // Assuming the actual data is in requestData[3]
-                
-                    // Define the DataTransferRequest schema
-                    const dataTransferRequestSchema = {
-                        properties: {
-                            vendorId: { type: "string", maxLength: 255 },
-                            messageId: { type: "string", maxLength: 50 },
-                            data: { type: "string" }
-                        },
-                        required: ["vendorId"],
-                        additionalProperties: false
-                    };
-                
-                    // Validation function
-                    function validate(data, schema) {
-                        const errors = [];
-                
-                        // Check required fields
-                        schema.required.forEach(field => {
-                            if (!data.hasOwnProperty(field)) {
-                                errors.push(`Missing required field: ${field}`);
-                            }
-                        });
-                
-                        // Check properties
-                        Object.keys(schema.properties).forEach(field => {
-                            if (data.hasOwnProperty(field)) {
-                                const property = schema.properties[field];
-                                if (typeof data[field] !== property.type) {
-                                    errors.push(`Invalid type for field: ${field}`);
-                                }
-                                if (property.maxLength && data[field].length > property.maxLength) {
-                                    errors.push(`Field exceeds maxLength: ${field}`);
-                                }
-                            }
-                        });
-                
-                        return errors;
-                    }
-                
-                    const errors = validate(data, dataTransferRequestSchema);
-                
-                    let status;
-                    if (errors.length === 0) {
-                        status = "Accepted";
-                    } else {
-                        status = "Rejected";
-                    }
-                
-                    const response = {
-                        status: status,
-                        data: "",//
-                    };
-                
-                    // Respond with DataTransferResponse
+                if (requestData[0] === 3 && requestData[2].action === 'DataTransfer') {
                     const httpResponse = OCPPResponseMap.get(ws);
                     if (httpResponse) {
                         httpResponse.setHeader('Content-Type', 'application/json');
-                        httpResponse.end(JSON.stringify(response));
+                        httpResponse.end(JSON.stringify(requestData));
                         OCPPResponseMap.delete(ws);
                     }
                 }
@@ -443,7 +402,7 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                 sessionFlags.set(uniqueIdentifier, 1);
                                 charging_states.set(uniqueIdentifier, true);
                                 StartTimestamp = timestamp;
-                                startedChargingSet.set(uniqueIdentifier);
+                                startedChargingSet.add(uniqueIdentifier);
                                 GenerateChargingSessionID = generateRandomTransactionId();
                                 chargingSessionID.set(uniqueIdentifier, GenerateChargingSessionID);
                             }
@@ -470,6 +429,41 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             }
                 
 
+                            if (sessionFlags.get(uniqueIdentifier) == 1) {
+                                let  unit;
+                                let sessionPrice;
+                                const meterValues = getMeterValues(uniqueIdentifier);
+                                console.log(`meterValues: ${meterValues.firstMeterValues} && ${meterValues.lastMeterValues}`);
+                                if (meterValues.firstMeterValues && meterValues.lastMeterValues) {
+                                    ({ unit, sessionPrice } = await calculateDifference(meterValues.firstMeterValues, meterValues.lastMeterValues,uniqueIdentifier));
+                                    console.log(`Energy consumed during charging session: ${unit} Unit's - Price: ${sessionPrice}`);
+                                    meterValues.firstMeterValues = undefined;
+                                } else {
+                                    console.log("StartMeterValues or LastMeterValues is not available.");
+                                }
+                                const user = await getUsername(uniqueIdentifier);
+                                const startTime = StartTimestamp;
+                                const stopTime = StopTimestamp;                            
+                                
+                                await handleChargingSession(uniqueIdentifier, startTime, stopTime, unit, sessionPrice, user, chargingSessionID.get(uniqueIdentifier));
+                                
+                                if (charging_states.get(uniqueIdentifier) == false) {
+                                    const result = await updateCurrentOrActiveUserToNull(uniqueIdentifier);
+                                    chargingSessionID.delete(uniqueIdentifier);
+                                    if (result === true) {
+                                        console.log(`ChargerID ${uniqueIdentifier} Stop - End charging session is updated successfully.`);
+                                    } else {
+                                        console.log(`ChargerID ${uniqueIdentifier} - End charging session is not updated.`);
+                                    }
+                                } else {
+                                    console.log('End charging session is not updated - while stop only it will work');
+                                }
+    
+                                StartTimestamp = null;
+                                StopTimestamp = null;
+                                sessionFlags.set(uniqueIdentifier, 0);
+                            }
+    
                         } else {
                             response[2] = { errors: errors };
                             sendTo.send(JSON.stringify(response));
@@ -602,6 +596,7 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                         }
                     
                         let transId;
+                        let isChargerStated = false;
                         const generatedTransactionId = generateRandomTransactionId();
                         const idTag = requestData[3].idTag;
                         const sendTo = wsConnections.get(uniqueIdentifier);
@@ -622,8 +617,10 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                     }
                                 }];
                                 sendTo.send(JSON.stringify(response));
-                                    await UpdateInUse(idTag ,true);
-                                isChargerStated = true;
+                                await UpdateInUse(idTag ,true);
+                                if(status === "Accepted"){
+                                    isChargerStated = true;
+                                }
                             }).catch(error => {
                                 isChargerStated = false;
                                 console.error(`${uniqueIdentifier}: Error executing while updating transactionId:`, error);
@@ -638,12 +635,270 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                 }
                             }];
                             sendTo.send(JSON.stringify(response));
+                            isChargerStated = false;
                             return;
                         }
+
+                        if(isChargerStated === true){
+
+                            const user = await getUsername(uniqueIdentifier);
+                            const autostop = await getAutostop(user);
+
+                            if (autostop.time_value && autostop.isTimeChecked === true) {
+                                const autostopTimeInSeconds = autostop.time_value * 60 * 1000; // Convert minutes to seconds
+                                // Start the timeout and store the reference
+                                autoStopTimer = setTimeout(async () => {                
+                                    console.log('Calling stop route after autostop_time for user:', user);
+                                    const result = await Chargercontrollers.chargerStopCall(uniqueIdentifier);
+
+                                    if (result === true) {
+                                        console.log(`AutoStop timer: Charger Stopped !`);
+                                    } else {
+                                        console.log(`Error: ${result}`);
+                                    }
+
+                                }, autostopTimeInSeconds);
+                            }else{
+                                console.error("AutoStop not enabled !");
+                            }
+                        }
                     } else if (requestType === 2 && requestName === "MeterValues") {
+                        const data = requestData[3]; // Extract the data for validation
+                        const UniqueChargingsessionId = chargingSessionID.get(uniqueIdentifier); // Use the current session ID
+                        let autostopSettings;
+
+                        const meterValuesSchema = {
+                            properties: {
+                                connectorId: {
+                                    type: "integer"
+                                },
+                                transactionId: {
+                                    type: "integer"
+                                },
+                                meterValue: {
+                                    type: "array",
+                                    items: {
+                                        type: "object",
+                                        properties: {
+                                            timestamp: {
+                                                type: "string",
+                                                format: "date-time"
+                                            },
+                                            sampledValue: {
+                                                type: "array",
+                                                items: {
+                                                    type: "object",
+                                                    properties: {
+                                                        value: {
+                                                            type: "string"
+                                                        },
+                                                        context: {
+                                                            type: "string",
+                                                            additionalProperties: false,
+                                                            enum: [
+                                                                "Interruption.Begin",
+                                                                "Interruption.End",
+                                                                "Sample.Clock",
+                                                                "Sample.Periodic",
+                                                                "Transaction.Begin",
+                                                                "Transaction.End",
+                                                                "Trigger",
+                                                                "Other"
+                                                            ]
+                                                        },
+                                                        format: {
+                                                            type: "string",
+                                                            additionalProperties: false,
+                                                            enum: [
+                                                                "Raw",
+                                                                "SignedData"
+                                                            ]
+                                                        },
+                                                        measurand: {
+                                                            type: "string",
+                                                            additionalProperties: false,
+                                                            enum: [
+                                                                "Energy.Active.Export.Register",
+                                                                "Energy.Active.Import.Register",
+                                                                "Energy.Reactive.Export.Register",
+                                                                "Energy.Reactive.Import.Register",
+                                                                "Energy.Active.Export.Interval",
+                                                                "Energy.Active.Import.Interval",
+                                                                "Energy.Reactive.Export.Interval",
+                                                                "Energy.Reactive.Import.Interval",
+                                                                "Power.Active.Export",
+                                                                "Power.Active.Import",
+                                                                "Power.Offered",
+                                                                "Power.Reactive.Export",
+                                                                "Power.Reactive.Import",
+                                                                "Power.Factor",
+                                                                "Current.Import",
+                                                                "Current.Export",
+                                                                "Current.Offered",
+                                                                "Voltage",
+                                                                "Frequency",
+                                                                "Temperature",
+                                                                "SoC",
+                                                                "RPM"
+                                                            ]
+                                                        },
+                                                        phase: {
+                                                            type: "string",
+                                                            additionalProperties: false,
+                                                            enum: [
+                                                                "L1",
+                                                                "L2",
+                                                                "L3",
+                                                                "N",
+                                                                "L1-N",
+                                                                "L2-N",
+                                                                "L3-N",
+                                                                "L1-L2",
+                                                                "L2-L3",
+                                                                "L3-L1"
+                                                            ]
+                                                        },
+                                                        location: {
+                                                            type: "string",
+                                                            additionalProperties: false,
+                                                            enum: [
+                                                                "Cable",
+                                                                "EV",
+                                                                "Inlet",
+                                                                "Outlet",
+                                                                "Body"
+                                                            ]
+                                                        },
+                                                        unit: {
+                                                            type: "string",
+                                                            additionalProperties: false,
+                                                            enum: [
+                                                                "Wh",
+                                                                "kWh",
+                                                                "varh",
+                                                                "kvarh",
+                                                                "W",
+                                                                "kW",
+                                                                "VA",
+                                                                "kVA",
+                                                                "var",
+                                                                "kvar",
+                                                                "A",
+                                                                "V",
+                                                                "K",
+                                                                "Celcius",
+                                                                "Celsius",
+                                                                "Fahrenheit",
+                                                                "Percent"
+                                                            ]
+                                                        }
+                                                    },
+                                                    additionalProperties: false,
+                                                    required: [
+                                                        "value"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        additionalProperties: false,
+                                        required: [
+                                            "timestamp",
+                                            "sampledValue"
+                                        ]
+                                    }
+                                }
+                            },
+                            additionalProperties: false,
+                            required: [
+                                "connectorId",
+                                "meterValue"
+                            ]
+                        };
+                        
+                        function validate(data, schema) {
+                            const errors = [];
+                        
+                            // Check required fields
+                            schema.required.forEach(field => {
+                                if (!data.hasOwnProperty(field)) {
+                                    errors.push(`Missing required field: ${field}`);
+                                }
+                            });
+                        
+                            // Check properties
+                            Object.keys(schema.properties).forEach(field => {
+                                if (data.hasOwnProperty(field)) {
+                                    const property = schema.properties[field];
+                    
+                                    // console.log(`Field: ${field}, Expected Type: ${property.type}, Actual Type: ${typeof data[field]}`);
+                    
+                                    if (property.type === "integer" && !Number.isInteger(data[field])) {
+                                        errors.push(`Invalid type for field: ${field}. Expected integer, got ${typeof data[field]}`);
+                                    } else if (property.type !== "integer" && typeof data[field] !== property.type) {
+                                        errors.push(`Invalid type for field: ${field}. Expected ${property.type}, got ${typeof data[field]}`);
+                                    }
+                                    if (property.maxLength && data[field].length > property.maxLength) {
+                                        errors.push(`Field exceeds maxLength: ${field}`);
+                                    }
+                                    if (property.enum && !property.enum.includes(data[field])) {
+                                        errors.push(`Invalid value for field: ${field}`);
+                                    }
+                                }
+                            });
+                        
+                            return errors;
+                        }
+                        
+                        const requestErrors = validate(data, meterValuesSchema);
+                    
                         const sendTo = wsConnections.get(uniqueIdentifier);
-                        const response = [3, requestData[1], {}];
+                        let response ;
+                        if (requestErrors.length === 0) {
+                            response = [3, Identifier , {}];
+
+                            if (!getMeterValues(uniqueIdentifier).firstMeterValues) {
+                                console.log('unit/price autostop - new session');
+                                // If not retrieved, retrieve the user and autostopSettings
+                                const user = await getUsername(uniqueIdentifier);
+                                autostopSettings = await getAutostop(user);
+    
+                                // Mark autostopSettings as retrieved for this device
+                                getMeterValues(uniqueIdentifier).autostopSettings = autostopSettings;
+                                //getMeterValues(uniqueIdentifier).autostopSettingsRetrieved = true;
+                            } else {
+                                console.log('unit/price autostop - session updating');
+                                // Retrieve autostopSettings specific to this device
+                                autostopSettings = getMeterValues(uniqueIdentifier).autostopSettings;
+                            }
+
+                            if (!getMeterValues(uniqueIdentifier).firstMeterValues) {
+                                getMeterValues(uniqueIdentifier).firstMeterValues = await captureMetervalues(Identifier, requestData, uniqueIdentifier, UniqueChargingsessionId);
+                                console.log(`First MeterValues for ${uniqueIdentifier} : ${getMeterValues(uniqueIdentifier).firstMeterValues}`);
+                                if(autostopSettings.isUnitChecked){
+                                    await autostop_unit(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
+                                }else if(autostopSettings.isPriceChecked){
+                                    await autostop_price(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
+                                }
+                            } else {
+                                getMeterValues(uniqueIdentifier).lastMeterValues = await captureMetervalues(Identifier, requestData, uniqueIdentifier, UniqueChargingsessionId);
+                                console.log(`Last MeterValues for ${uniqueIdentifier}  : ${getMeterValues(uniqueIdentifier).lastMeterValues}`);
+                                if(autostopSettings.isUnitChecked){
+                                    await autostop_unit(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
+                                }else if(autostopSettings.isPriceChecked){
+                                    await autostop_price(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
+                                }                       
+                            }
+
+                        } else {
+                            console.error('Invalid MeterValues frame:', requestErrors);
+                            response = [3, Identifier, {
+                                "errors": requestErrors
+                            }];
+                        }
+
                         sendTo.send(JSON.stringify(response));
+
+
                     } else if (requestType === 2 && requestName === "StopTransaction") {//StopTransaction
                         const data = requestData[3]; // Extract the data for validation
                         // Define schema

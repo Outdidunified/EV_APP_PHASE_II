@@ -1,6 +1,6 @@
 const database = require('../../db');
 const logger = require('../../logger');
-const { wsConnections } = require('../../MapModules.js');
+const { wsConnections, uniqueKey, TagID } = require('../../MapModules.js');
 
 //fetchLastStatus
 async function fetchLastStatus(req, res) {
@@ -78,7 +78,7 @@ async function chargerStopCall(id) {
             const Tag_ID = TagID.get(id);
             if (wsToSendTo) {
                 const transId = transData.transaction_id;
-                const remoteStopRequest = [2, Tag_ID.toISOString(), "RemoteStopTransaction", { "transactionId": transId }];
+                const remoteStopRequest = [2, Tag_ID, "RemoteStopTransaction", { "transactionId": transId }];
                 wsToSendTo.send(JSON.stringify(remoteStopRequest));
 
                 console.log('Stop message sent to the WebSocket client for device ID:', id);
