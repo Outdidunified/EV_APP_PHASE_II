@@ -2,6 +2,7 @@ const database = require('./db');
 const logger = require('./logger');
 const { connectToDatabase } = require('./db');
 const { wsConnections } = require('./MapModules');
+const Chargercontrollers = require("./src/ChargingSession/controllers.js");
 
 
 // Save recharge details
@@ -19,7 +20,7 @@ async function savePaymentDetails(data) {
         }
 
         // Update user's wallet
-        const updateResult = await userCollection.updateOne({ username: data.user }, { $inc: { walletBalance: parseFloat(data.RechargeAmt) } });
+        const updateResult = await userCollection.updateOne({ username: data.user }, { $inc: { wallet_bal: parseFloat(data.RechargeAmt) } });
 
         if (updateResult.modifiedCount === 1) {
             return true;
@@ -33,35 +34,42 @@ async function savePaymentDetails(data) {
 }
 
 
-// Fetch ip and update user
-async function getIpAndupdateUser(chargerID, user) {
+// Fetch IP and update user for a specific connector
+async function getIpAndupdateUser(chargerID, user, connectorId) {
     try {
         const db = await database.connectToDatabase();
-        const getip = await db.collection('ev_details').findOne({ ChargerID: chargerID });
-        const ip = getip.ip;
-        if (getip) {
-            if (user !== undefined) {
-                const updateResult = await db.collection('ev_details').updateOne({ ChargerID: chargerID }, { $set: { current_or_active_user: user } });
+        const chargerDetails = await db.collection('charger_details').findOne({ charger_id: chargerID });
 
-                if (updateResult.modifiedCount === 1) {
-                    console.log(`Updated current_or_active_user to ${user} successfully for ChargerID ${chargerID}`);
-                } else {
-                    console.log(`Failed to update current_or_active_user for ChargerID ${chargerID}`);
-                }
-            } else {
-                console.log('User is undefined - On stop there will be no user details');
-            }
-
-            return ip;
-        } else {
-            console.log(`GetIP Unsuccessful`);
+        if (!chargerDetails) {
+            console.log(`GetIP Unsuccessful - ChargerID ${chargerID} not found`);
+            return null;
         }
+
+        const ip = chargerDetails.ip;
+        const connectorField = `current_or_active_user_for_connector_${connectorId}`;
+
+        if (user !== undefined) {
+            const updateResult = await db.collection('charger_details').updateOne(
+                { charger_id: chargerID },
+                { $set: { [connectorField]: user } }
+            );
+
+            if (updateResult.modifiedCount === 1) {
+                console.log(`Updated ${connectorField} to ${user} successfully for ChargerID ${chargerID}`);
+            } else {
+                console.log(`Failed to update ${connectorField} for ChargerID ${chargerID}`);
+            }
+        } else {
+            console.log('User is undefined - On stop there will be no user details');
+        }
+
+        return ip;
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: 'Internal Server Error' });
+        throw new Error('Internal Server Error');
     }
-
 }
+
 
 //generateRandomTransactionId function
 function generateRandomTransactionId() {
@@ -69,34 +77,46 @@ function generateRandomTransactionId() {
 }
 
 //Save the received ChargerStatus
-async function SaveChargerStatus(chargerStatus) {
-
+async function SaveChargerStatus(chargerStatus, connectorId) {
     const db = await connectToDatabase();
     const collection = db.collection('charger_status');
     const ChargerStatus = JSON.parse(chargerStatus);
-    // Check if a document with the same chargerID already exists
-    await collection.findOne({ charger_id: ChargerStatus.charger_id })
+    ChargerStatus.connector_id = connectorId; // Add the connectorId to the ChargerStatus object
+
+    // Check if a document with the same chargerID and connectorId already exists
+    await collection.findOne({ charger_id: ChargerStatus.charger_id, connector_id: connectorId })
         .then(existingDocument => {
             if (existingDocument) {
                 // Update the existing document
-                collection.updateOne({ charger_id: ChargerStatus.charger_id }, { $set: { client_ip: ChargerStatus.client_ip,  charger_status: ChargerStatus.charger_status, timestamp: new Date(chargerStatus.timestamp), error_code: ChargerStatus.error_code, modified_date : new Date() } })
-                    .then(result => {
-                        if (result) {
-                            console.log(`ChargerID ${ChargerStatus.charger_id}: Status successfully updated.`);
-                            logger.info(`ChargerID ${ChargerStatus.charger_id}: Status successfully updated.`);
-                        } else {
-                            console.log(`ChargerID ${ChargerStatus.charger_id}: Status not updated`);
-                            logger.info(`ChargerID ${ChargerStatus.charger_id}: Status not updated`);
+                collection.updateOne(
+                    { charger_id: ChargerStatus.charger_id, connector_id: connectorId },
+                    {
+                        $set: {
+                            client_ip: ChargerStatus.client_ip,
+                            connector_type: ChargerStatus.connector_type,
+                            charger_status: ChargerStatus.charger_status,
+                            timestamp: new Date(ChargerStatus.timestamp),
+                            error_code: ChargerStatus.error_code,
+                            modified_date: new Date()
                         }
-                    })
-                    .catch(error => {
-                        console.log(`ChargerID ${ChargerStatus.charger_id}: Error occur while update the status: ${error}`);
-                        logger.error(`ChargerID ${ChargerStatus.charger_id}: Error occur while update the status: ${error}`);
-                    });
+                    }
+                )
+                .then(result => {
+                    if (result) {
+                        console.log(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Status successfully updated.`);
+                        logger.info(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Status successfully updated.`);
+                    } else {
+                        console.log(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Status not updated.`);
+                        logger.info(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Status not updated.`);
+                    }
+                })
+                .catch(error => {
+                    console.log(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Error occur while updating the status: ${error}`);
+                    logger.error(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Error occur while updating the status: ${error}`);
+                });
 
             } else {
-
-                db.collection('charger_details').findOne({ charger_id: ChargerStatus.charger_id }) // changed 08/12
+                db.collection('charger_details').findOne({ charger_id: ChargerStatus.charger_id })
                     .then(foundDocument => {
                         if (foundDocument) {
                             ChargerStatus.charger_id = foundDocument.charger_id;
@@ -104,19 +124,18 @@ async function SaveChargerStatus(chargerStatus) {
                             collection.insertOne(ChargerStatus)
                                 .then(result => {
                                     if (result) {
-                                        console.log(`ChargerID ${ChargerStatus.charger_id}: Status successfully inserted.`);
+                                        console.log(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Status successfully inserted.`);
                                     } else {
-                                        console.log(`ChargerID ${ChargerStatus.charger_id}: Status not inserted`);
+                                        console.log(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Status not inserted.`);
                                     }
                                 })
                                 .catch(error => {
-                                    console.log(`ChargerID ${ChargerStatus.charger_id}: Error occur while insert the status: ${error}`);
+                                    console.log(`ChargerID ${ChargerStatus.charger_id}, ConnectorID ${connectorId}: Error occur while inserting the status: ${error}`);
                                 });
-
                         } else {
                             console.log('Document not found in ChargerStatusSave function');
                         }
-                    })
+                    });
             }
         })
         .catch(error => {
@@ -124,72 +143,67 @@ async function SaveChargerStatus(chargerStatus) {
         });
 }
 
+
 //Save the received ChargerValue
 async function SaveChargerValue(ChargerVal) {
 
     const db = await connectToDatabase();
     const collection = db.collection('charger_meter_values');
     const ChargerValue = JSON.parse(ChargerVal);
-    console.log(ChargerValue)
 
     await db.collection('charger_details').findOne({ charger_id: ChargerValue.charger_id })
         .then(foundDocument => {
             if (foundDocument) {
-                ChargerValue.chargerID = foundDocument.ChargerID; // Assuming ChargerID is the correct field name
+                ChargerValue.charger_id = foundDocument.charger_id; // Assuming ChargerID is the correct field name
                 collection.insertOne(ChargerValue)
                     .then(result => {
                         if (result) {
-                            console.log(`ChargerID ${ChargerValue.chargerID}: Value successfully inserted.`);
-                            logger.info(`ChargerID ${ChargerValue.chargerID}: Value successfully inserted.`);
+                            console.log(`ChargerID ${ChargerValue.charger_id}: Value successfully inserted.`);
+                            logger.info(`ChargerID ${ChargerValue.charger_id}: Value successfully inserted.`);
                         } else {
-                            console.log(`ChargerID ${ChargerValue.chargerID}: Value not inserted`);
-                            logger.error(`ChargerID ${ChargerValue.chargerID}: Value not inserted`);
+                            console.log(`ChargerID ${ChargerValue.charger_id}: Value not inserted`);
+                            logger.error(`ChargerID ${ChargerValue.charger_id}: Value not inserted`);
                         }
                     })
                     .catch(error => {
-                        console.log(`ChargerID ${ChargerValue.chargerID}: An error occurred while inserting the value: ${error}.`);
-                        logger.info(`ChargerID ${ChargerValue.chargerID}: An error occurred while inserting the value: ${error}.`);
+                        console.log(`ChargerID ${ChargerValue.charger_id}: An error occurred while inserting the value: ${error}.`);
+                        logger.info(`ChargerID ${ChargerValue.charger_id}: An error occurred while inserting the value: ${error}.`);
                     });
             } else {
-                console.log(`ChargerID ${ChargerValue.chargerID}: Value not available in the ChargerSavevalue function`);
-                logger.info(`ChargerID ${ChargerValue.chargerID}: Value not available in the ChargerSavevalue function`);
+                console.log(`ChargerID ${ChargerValue.charger_id}: Value not available in the ChargerSavevalue function`);
+                logger.info(`ChargerID ${ChargerValue.charger_id}: Value not available in the ChargerSavevalue function`);
             }
         })
 
 }
 
 //update time while while receive message from ws
-async function updateTime(charger_id) {
+async function updateTime(charger_id, connectorId) {
     const db = await connectToDatabase();
     const evDetailsCollection = db.collection('charger_details');
-    const collection = db.collection('charger_status');
+    const chargerStatusCollection = db.collection('charger_status');
     const unregisteredDevicesCollection = db.collection('UnRegister_Devices');
 
-    // Correct the query to pass an object with charger_id as a key
-    const deviceExists = await evDetailsCollection.findOne({charger_id });
+    // Check if the device exists in the charger_details collection
+    const deviceExists = await evDetailsCollection.findOne({ charger_id });
 
     if (deviceExists) {
+        // Update timestamp for the specific charger_id and connectorId
         const filter = { charger_id };
         const update = { $set: { timestamp: new Date() } };
-        const result = await collection.updateOne(filter, update);
+        const result = await chargerStatusCollection.updateOne(filter, update);
 
         if (result.modifiedCount === 1) {
             console.log(`The time for ChargerID ${charger_id} has been successfully updated.`);
             logger.info(`The time for ChargerID ${charger_id} has been successfully updated.`);
         } else {
-            console.log(`ChargerID ${charger_id} not found to update time`);
-            logger.error(`ChargerID ${charger_id} not found to update time`);
-            const deleteUnRegDev = await unregisteredDevicesCollection.deleteOne({ charger_id });
-            if (deleteUnRegDev.deletedCount === 1) {
-                console.log(`UnRegisterDevices - ${charger_id} has been deleted.`);
-            } else {
-                console.log(`Failed to delete UnRegisterDevices - ${charger_id}.`);
-            }
+            console.log(`ChargerID ${charger_id} not found to update time.`);
+            logger.error(`ChargerID ${charger_id} not found to update time.`);
         }
 
         return true;
     } else {
-        // Device_ID does not exist in ev_details collection
+        // Device_ID does not exist in charger_details collection
         console.log(`ChargerID ${charger_id} does not exist in the database.`);
         logger.error(`ChargerID ${charger_id} does not exist in the database.`);
 
@@ -207,7 +221,7 @@ async function updateTime(charger_id) {
             console.log(`UnRegisterDevices - ${charger_id} inserted.`);
         }
 
-        // Delete the unregistered charger after updating or inserting
+        // Optionally, delete the unregistered charger after updating or inserting
         const deleteUnRegDev = await unregisteredDevicesCollection.deleteOne({ charger_id });
         if (deleteUnRegDev.deletedCount === 1) {
             console.log(`UnRegisterDevices - ${charger_id} has been deleted.`);
@@ -220,7 +234,7 @@ async function updateTime(charger_id) {
 }
 
 //insert charging session into the database
-async function handleChargingSession(charger_id, startTime, stopTime, Unitconsumed, Totalprice, user, SessionID) {
+async function handleChargingSession(charger_id, connectorId,startTime, stopTime, Unitconsumed, Totalprice, user, SessionID, connectorTypeValue) {
     const db = await connectToDatabase();
     const collection = db.collection('device_session_details');
     let TotalUnitConsumed;
@@ -231,10 +245,9 @@ async function handleChargingSession(charger_id, startTime, stopTime, Unitconsum
     }
     const sessionPrice = isNaN(Totalprice) || Totalprice === 'NaN' ? "0.00" : parseFloat(Totalprice).toFixed(2);
     console.log(`Start: ${startTime}, Stop: ${stopTime}, Unit: ${TotalUnitConsumed}, Price: ${sessionPrice}`);
-    console.log(user)
     // Check if a document with the same chargerID already exists in the charging_session table
     const existingDocument = await collection
-        .find({ charger_id: charger_id, session_id: SessionID })
+        .find({ charger_id: charger_id, session_id: SessionID, connector_id: connectorId, connector_type: connectorTypeValue })
         .sort({ _id: -1 })
         .limit(1)
         .next();
@@ -242,7 +255,7 @@ async function handleChargingSession(charger_id, startTime, stopTime, Unitconsum
 
     if (existingDocument) {
         if (existingDocument.stop_time === null) {
-            const result = await collection.updateOne({ charger_id: charger_id, session_id: SessionID, stop_time: null }, {
+            const result = await collection.updateOne({ charger_id: charger_id,connector_id: connectorId, session_id: SessionID, stop_time: null }, {
                 $set: {
                     stop_time: stopTime !== null ? stopTime : undefined,
                     unit_consummed: TotalUnitConsumed,
@@ -267,6 +280,8 @@ async function handleChargingSession(charger_id, startTime, stopTime, Unitconsum
         } else {
             const newSession = {
                 charger_id: charger_id,
+                connector_id: connectorId,
+                connector_type: connectorTypeValue,
                 session_id: SessionID,
                 start_time: startTime !== null ? startTime : undefined,
                 stop_time: stopTime !== null ? stopTime : undefined,
@@ -293,6 +308,8 @@ async function handleChargingSession(charger_id, startTime, stopTime, Unitconsum
             if (evDetailsDocument) {
                 const newSession = {
                     charger_id: charger_id,
+                    connector_id: connectorId,
+                    connector_type: connectorTypeValue,
                     session_id: SessionID,
                     start_time: startTime !== null ? startTime : undefined,
                     stop_time: stopTime !== null ? stopTime : undefined,
@@ -303,7 +320,6 @@ async function handleChargingSession(charger_id, startTime, stopTime, Unitconsum
                 };
 
                 const result = await collection.insertOne(newSession);
-                console.log(result)
                 if (result.acknowledged === true) {
                     console.log(`ChargerID ${charger_id}: Session inserted`);
                     logger.info(`ChargerID ${charger_id}: Session inserted`);
@@ -332,10 +348,10 @@ async function updateSessionPriceToUser(user, price) {
         const userDocument = await usersCollection.findOne({ username: user });
 
         if (userDocument) {
-            const updatedWalletBalance = (userDocument.walletBalance - sessionPrice).toFixed(2);
+            const updatedWalletBalance = (userDocument.wallet_bal - sessionPrice).toFixed(2);
             // Check if the updated wallet balance is NaN
             if (!isNaN(updatedWalletBalance)) {
-                const result = await usersCollection.updateOne({ username: user }, { $set: { walletBalance: parseFloat(updatedWalletBalance) } });
+                const result = await usersCollection.updateOne({ username: user }, { $set: { wallet_bal: parseFloat(updatedWalletBalance) } });
 
                 if (result.modifiedCount > 0) {
                     console.log(`Wallet balance updated for user ${user}.`);
@@ -357,12 +373,15 @@ async function updateSessionPriceToUser(user, price) {
     }
 }
 
-//update current or active user to null
-async function updateCurrentOrActiveUserToNull(uniqueIdentifier) {
+// Update current or active user to null for a specific connector
+async function updateCurrentOrActiveUserToNull(uniqueIdentifier, connectorId) {
     try {
         const db = await connectToDatabase();
         const collection = db.collection('charger_details');
-        const result = await collection.updateOne({ charger_id: uniqueIdentifier }, { $set: { current_or_active_user: null } });
+        const updateField = `current_or_active_user_for_connector_${connectorId}`;
+        const updateObject = { $set: { [updateField]: null } };
+
+        const result = await collection.updateOne({ charger_id: uniqueIdentifier }, updateObject);
 
         if (result.modifiedCount === 0) {
             return false;
@@ -370,10 +389,11 @@ async function updateCurrentOrActiveUserToNull(uniqueIdentifier) {
 
         return true;
     } catch (error) {
-        console.error('Error while update CurrentOrActiveUser To Null:', error);
+        console.error('Error while updating CurrentOrActiveUser to null:', error);
         return false;
     }
 }
+
 
 async function updateChargerDetails(charger_id, updateData) {
     try {
@@ -407,13 +427,20 @@ const checkChargerIdInDatabase = async (charger_id) => {
     } 
 };
 
-const checkChargerTagId = async (charger_id) => {
+const checkChargerTagId = async (charger_id, connector_id) => {
     try {
         const db = await database.connectToDatabase();
         const collection = db.collection('charger_details');
-        const charger = await collection.findOne({ charger_id: charger_id }, { projection: { tag_id: 1 } });
 
-        if (!charger || charger.tag_id === null) {
+        // Dynamically build the projection field name based on the connector_id
+        const projectionField = `tag_id_for_connector_${connector_id}`;
+        
+        const charger = await collection.findOne(
+            { charger_id: charger_id },
+            { projection: { [projectionField]: 1 } }
+        );
+
+        if (!charger || charger[projectionField] === null) {
             return 'Pending';
         }
         return 'Accepted';
@@ -423,61 +450,241 @@ const checkChargerTagId = async (charger_id) => {
     }
 };
 
-const UpdateInUse = async (tagId, value) => {
+const UpdateInUse = async (charger_id, idTag, connectorId) => {
     try {
         const db = await database.connectToDatabase();
-        const tagIdCollection = db.collection('tag_id'); // Assuming the collection name is 'tag_id'
-        const updateResult = await tagIdCollection.updateOne({ tag_id: tagId }, { $set: { in_use: value } });
+        const chargerDetailsCollection = db.collection('charger_details'); // Assuming the collection name is 'charger_details'
+
+        // Construct the dynamic field name for the specific connector
+        const connectorTagIdField = `tag_id_for_connector_${connectorId}`;
+        const connectorTagIdInUseField = `tag_id_for_connector_${connectorId}_in_use`;
+
+        // Fetch the specific connector's tag ID from the charger details
+        const chargerDetails = await chargerDetailsCollection.findOne(
+            { charger_id: charger_id },
+            { projection: { [connectorTagIdField]: 1, [connectorTagIdInUseField]: 1 } }
+        );
+
+        // Check if the tag ID exists and matches the provided idTag
+        if (!chargerDetails || chargerDetails[connectorTagIdField] !== idTag) {
+            console.log(`Tag ID ${idTag} not found for connector ${connectorId} on charger ${charger_id}`);
+            return;
+        }
+
+        // Create the update field to set 'tag_id_for_connector_{connectorId}' to null
+        const updateFields = {
+            [connectorTagIdField]: null,
+            [connectorTagIdInUseField]: false
+        };
+
+        // Update the specific connector's 'tag_id' field to null
+        const updateResult = await chargerDetailsCollection.updateOne(
+            { charger_id: charger_id, [connectorTagIdField]: idTag },
+            { $set: updateFields }
+        );
 
         if (updateResult.matchedCount === 0) {
-            console.log(`Tag ID ${tagId} not found`);
+            console.log(`Charger ID ${charger_id} with Tag ID ${idTag} not found`);
         } else if (updateResult.modifiedCount === 0) {
-            console.log(`Tag ID ${tagId} found but the 'in_use' value was already ${value}`);
+            console.log(`Charger ID ${charger_id} with Tag ID ${idTag} found but no changes were made.`);
         } else {
-            console.log(`Tag ID ${tagId} successfully updated to 'in_use' value: ${value}`);
+            console.log(`Charger ID ${charger_id} successfully updated '${connectorTagIdField}' to null`);
         }
     } catch (error) {
-        console.error('Database error:', error);
+        console.error('UpdateInUse error:', error);
     }
 };
+
+const NullTagIDInStatus = async (charger_id, connector_id) =>{
+    try{
+        const db = await database.connectToDatabase();
+        const chargerDetailsCollection = db.collection('charger_details');
+
+        // Construct the dynamic field name for the specific connector
+        const connectorTagIdField = `tag_id_for_connector_${connector_id}`;
+        const connectorTagIdInUseField = `tag_id_for_connector_${connector_id}_in_use`;
+
+        // Create the update field to set 'tag_id_for_connector_{connectorId}' to null
+        const updateFields = {
+            [connectorTagIdField]: null,
+            [connectorTagIdInUseField]: false
+        };
+
+        // Update the specific connector's 'tag_id' field to null
+        const updateResult = await chargerDetailsCollection.updateOne(
+            { charger_id: charger_id },
+            { $set: updateFields }
+        );
+
+        if (updateResult.matchedCount === 0) {
+            console.log(`Charger ID ${charger_id} not found`);
+        } else if (updateResult.modifiedCount === 0) {
+            console.log(`Charger ID ${charger_id} found but no changes were made.`);
+        } else {
+            console.log(`Charger ID ${charger_id} successfully updated '${connectorTagIdField}' details updated`);
+        }
+
+    }catch(error){
+        console.error('NullTagIDInStatus error:', error);
+    }
+}
+
+
+
+
+// async function checkAuthorization(charger_id, idTag) {
+//     try {
+//         const db = await connectToDatabase();
+//         const chargerDetailsCollection = db.collection('charger_details');
+//         const tagIdCollection = db.collection('tag_id'); // Assuming the collection name is 'tag_id'
+
+//         // If connector_id is null, directly check the tag_id in the tag_id collection
+//         if (connector_id === null) {
+//             const tagIdDetails = await tagIdCollection.findOne({ tag_id: idTag });
+//             if (!tagIdDetails) {
+//                 return { status: "Invalid" };
+//             }
+
+//             const expiryDate = new Date(tagIdDetails.tag_id_expiry_date);
+//             const currentDate = new Date();
+
+//             if (tagIdDetails.status === false) {
+//                 return { status: "Blocked", expiryDate: expiryDate.toISOString() };
+//             } else if (expiryDate < currentDate) {
+//                 return { status: "Expired", expiryDate: expiryDate.toISOString() };
+//             } else if (tagIdDetails.in_use === true) {
+//                 return { status: "ConcurrentTx", expiryDate: expiryDate.toISOString() };
+//             } else {
+//                 return { status: "Accepted", expiryDate: expiryDate.toISOString() };
+//             }
+//         }
+
+//         // Generate the field name dynamically based on the connector ID
+//         const connectorTagIdField = `tag_id_for_connector_${connector_id}`;
+//         console.log("connectorTagIdField", connectorTagIdField);
+        
+//         // Fetch charger details
+//         const chargerDetails = await chargerDetailsCollection.findOne(
+//             { charger_id },
+//             { projection: { [connectorTagIdField]: 1 } }
+//         );
+//         console.log("chargerDetails", chargerDetails);
+
+//         if (!chargerDetails || chargerDetails[connectorTagIdField] !== idTag) {
+//             return { status: "Invalid" };
+//         }
+
+//         // Fetch tag_id details from the separate collection
+//         const tagIdDetails = await tagIdCollection.findOne({ tag_id: idTag });
+
+//         if (!tagIdDetails) {
+//             return { status: "Invalid" };
+//         }
+
+//         const expiryDate = new Date(tagIdDetails.tag_id_expiry_date);
+//         const currentDate = new Date();
+
+//         // Check various conditions based on the tag_id details
+//         if (tagIdDetails.status === false) {
+//             return { status: "Blocked", expiryDate: expiryDate.toISOString() };
+//         } else if (expiryDate < currentDate) {
+//             return { status: "Expired", expiryDate: expiryDate.toISOString() };
+//         } else if (tagIdDetails.in_use === true) {
+//             return { status: "ConcurrentTx", expiryDate: expiryDate.toISOString() };
+//         } else {
+//             return { status: "Accepted", expiryDate: expiryDate.toISOString() };
+//         }
+
+//     } catch (error) {
+//         console.error(`Error checking tag_id for charger_id ${charger_id} and connector_id ${connector_id}:`, error);
+//         return { status: "Error" };
+//     }
+// }
+
 
 
 async function checkAuthorization(charger_id, idTag) {
     try {
         const db = await connectToDatabase();
         const chargerDetailsCollection = db.collection('charger_details');
-        const tagIdCollection = db.collection('tag_id'); // Assuming the collection name is 'tag_id'
-        
-        // Fetch charger details
-        const chargerDetails = await chargerDetailsCollection.findOne({ charger_id });
+        const tagIdCollection = db.collection('tag_id');
 
-        if (chargerDetails && chargerDetails.tag_id === idTag) {
-            // Fetch tag_id details from the separate collection
-            const tagIdDetails = await tagIdCollection.findOne({ tag_id: idTag });
-
-            if (tagIdDetails) {
-                const expiryDate = new Date(tagIdDetails.tag_id_expiry_date);
-                const currentDate = new Date();
-                
-                if (tagIdDetails.status === false) {
-                    return { status: "Blocked", expiryDate: expiryDate.toISOString() };
-                } else if (expiryDate < currentDate){
-                    return { status: "Expired", expiryDate: expiryDate.toISOString() };
-                } else if (tagIdDetails.in_use === true){
-                    return { status: "ConcurrentTx" , expiryDate: expiryDate.toISOString() };
-                }  else {
-
-                    return { status: "Accepted", expiryDate: expiryDate.toISOString() };
-                }
-            } else {
-                return { status: "Invalid"};
-            }
-        }else{
-            return { status: "Invalid"};
+        // Fetch charger details, including the chargePointModel
+        const chargerDetails = await chargerDetailsCollection.findOne(
+            { charger_id },
+            { projection: { model: 1 } }
+        );
+        if (!chargerDetails || !chargerDetails.model) {
+            return { status: "Invalid" };
         }
+
+        // Dynamically determine the number of connectors based on the chargePointModel
+        const connectors = chargerDetails.model.split('- ')[1];
+        const totalConnectors = Math.ceil(connectors.length / 2);
+
+        // Dynamically create the projection fields based on the number of connectors
+        let projection = { charger_id: 1 };
+        for (let i = 1; i <= totalConnectors; i++) {
+            projection[`current_or_active_user_for_connector_${i}`] = 1;
+            projection[`tag_id_for_connector_${i}`] = 1;
+            // projection[`tag_id_for_connector_${i}_in_use`] = 1;
+        }
+        
+        // Fetch charger details with dynamically generated projection
+        const chargerDetailsWithConnectors = await chargerDetailsCollection.findOne(
+            { charger_id },
+            { projection }
+        );
+        if (!chargerDetailsWithConnectors) {
+            return { status: "Invalid" };
+        }
+
+        // Identify the connector associated with the provided tag_id
+        let connectorId = null;
+        for (let i = 1; i <= totalConnectors; i++) {
+            if (chargerDetailsWithConnectors[`tag_id_for_connector_${i}`] === idTag) {
+                connectorId = i;
+                break;
+            }
+        }
+
+        if (!connectorId) {
+            connectorId = 1;
+        }
+
+        // Check if the tag_id_for_connector_{id} does not match the provided idTag
+        for (let i = 1; i <= totalConnectors; i++) {
+            if (i !== connectorId && chargerDetailsWithConnectors[`tag_id_for_connector_${i}`] === idTag) {
+                return { status: "ConcurrentTx", connectorId };
+            }
+        }
+
+        // Fetch tag_id details from the separate collection
+        let tagIdDetails = await tagIdCollection.findOne({ tag_id: idTag });
+
+        let expiryDate;
+        let currentDate = new Date();
+
+        if(!tagIdDetails){
+            expiryDate = new Date();
+            expiryDate.setDate(currentDate.getDate() + 1); // Add one day to the expiry date
+            tagIdDetails = { status: true};
+        }else if(tagIdDetails){
+            expiryDate = new Date(tagIdDetails.tag_id_expiry_date);
+        }
+
+        // Check various conditions based on the tag_id details
+        if (tagIdDetails.status === false) {
+            return { status: "Blocked", expiryDate: expiryDate.toISOString() , connectorId};
+        } else if (expiryDate <= currentDate) {
+            return { status: "Expired", expiryDate: expiryDate.toISOString() , connectorId};
+        } else {
+            return { status: "Accepted", expiryDate: expiryDate.toISOString() , connectorId};
+        }
+
     } catch (error) {
         console.error(`Error checking tag_id for charger_id ${charger_id}:`, error);
-        return "Error";
+        return { status: "Error" };
     }
 }
 
@@ -494,29 +701,69 @@ async function calculateDifference(startValues, lastValues,uniqueIdentifier) {
     } else {
         unit = calculatedUnit;
     }
-    console.log(`Unit: ${unit}`);
     const sessionPrice = await calculatePrice(unit, uniqueIdentifier);
     const formattedSessionPrice = isNaN(sessionPrice) || sessionPrice === 'NaN' ? 0 : parseFloat(sessionPrice).toFixed(2);
     return { unit, sessionPrice: formattedSessionPrice };
 }
 
-async function getUsername(chargerID) {
+// Fetch the correct user active based on the connector ID
+async function getUsername(chargerID, connectorId, TagID) {
     try {
         const db = await connectToDatabase();
         const evDetailsCollection = db.collection('charger_details');
         const chargerDetails = await evDetailsCollection.findOne({ charger_id: chargerID });
         if (!chargerDetails) {
             console.log('getUsername - Charger ID not found in the database');
+            return null;
         }
-        if (!chargerDetails) {
-            console.log('getUsername - Charger ID not found in the database');
+        
+        const userField = `current_or_active_user_for_connector_${connectorId}`;
+        let username = chargerDetails[userField];
+
+        // while start the charger using nfc card, here get the username using tag id and update the respective fields
+        if(TagID){
+            if(username === null){
+                const userCollection = db.collection('users');
+                const tagIdCollection = db.collection('tag_id');
+                const GetTagID = await tagIdCollection.findOne({ tag_id: TagID });
+
+                if(!GetTagID){
+                    console.log(`Tag ID not found in the database !`);
+                } else {
+                    const GetUsername = await userCollection.findOne({ tag_id: GetTagID.id });
+                    const updateUsername = await evDetailsCollection.updateOne(
+                    { charger_id: chargerID },
+                    {
+                        $set: {
+                        [userField]: GetUsername.username
+                        }
+                    }
+                    );
+
+                    // Check if the update was successful
+                    if (updateUsername.matchedCount === 0) {
+                        console.log('getUsername - UserName Not updated using NFC card');
+                    } else if (updateUsername.modifiedCount === 0) {
+                        username = GetUsername.username;
+                        console.log('getUsername - UserName Not updated using NFC card, same value(username) in the table');
+                    } else {
+                        username = GetUsername.username;
+                        console.log('getUsername - UserName updated successfully');
+                    } 
+                }     
+            }
+        }else{
+            console.log(`TagID is null - If its remote start/stop it will be fine !`);
         }
-        const username = chargerDetails.current_or_active_user;
-        return username;
+
+        return username || null; // Return the username or null if not found
     } catch (error) {
         console.error('Error getting username:', error);
+        return null;
     }
 }
+
+
 async function getAutostop(user){
     try{
         const db = await database.connectToDatabase();
@@ -529,7 +776,7 @@ async function getAutostop(user){
         const price_val = autoTimeVal.autostop_price;
         const isPriceChecked = autoTimeVal.autostop_price_is_checked;
 
-        console.log(`getAutostop_time: ${time_val} & ${isTimeChecked}, getAutostop_unit: ${unit_val} & ${isUnitChecked}, getAutostop_price: ${price_val} & ${isPriceChecked}`);
+        // console.log(`getAutostop_time: ${time_val} & ${isTimeChecked}, getAutostop_unit: ${unit_val} & ${isUnitChecked}, getAutostop_price: ${price_val} & ${isPriceChecked}`);
 
         return { 'time_value': time_val, 'isTimeChecked': isTimeChecked, 'unit_value': unit_val, 'isUnitChecked': isUnitChecked, 'price_value': price_val, 'isPriceChecked': isPriceChecked };
 
@@ -540,7 +787,7 @@ async function getAutostop(user){
 }
 
 
-async function captureMetervalues(Identifier, requestData, uniqueIdentifier, UniqueChargingsessionId) {
+async function captureMetervalues(Identifier, requestData, uniqueIdentifier, clientIpAddress, UniqueChargingsessionId, connectorId) {
     const sendTo = wsConnections.get(uniqueIdentifier);
     const response = [3, Identifier, {}];
     sendTo.send(JSON.stringify(response));
@@ -561,21 +808,23 @@ async function captureMetervalues(Identifier, requestData, uniqueIdentifier, Uni
     });
 
     const currentTime = new Date().toISOString();
-    keyValuePair.timestamp = currentTime;
-    keyValuePair.client_ip = clientIpAddress;
-    keyValuePair.session_id = UniqueChargingsessionId;
-    keyValuePair.created_date = currentTime;
+    keyValuePair.charger_id = uniqueIdentifier;
+    keyValuePair.Timestamp = currentTime;
+    keyValuePair.clientIP = clientIpAddress;
+    keyValuePair.SessionID = UniqueChargingsessionId;
+    keyValuePair.connectorId = connectorId;
 
     const ChargerValue = JSON.stringify(keyValuePair);
     await SaveChargerValue(ChargerValue);
-    await updateTime(uniqueIdentifier);
+    await updateTime(uniqueIdentifier, connectorId);
     if (keyValuePair['Energy.Active.Import.Register'] !== undefined) {
         return EnergyValue;
     }
     return undefined;
 }
 
-async function autostop_unit(firstMeterValues,lastMeterValues,autostopSettings,uniqueIdentifier){
+
+async function autostop_unit(firstMeterValues,lastMeterValues,autostopSettings,uniqueIdentifier, connectorId){
 
     const startEnergy = firstMeterValues || 0;
     const lastEnergy = lastMeterValues || 0;
@@ -584,13 +833,12 @@ async function autostop_unit(firstMeterValues,lastMeterValues,autostopSettings,u
     let calculatedUnit = parseFloat(result / 1000).toFixed(3);
 
     console.dir(autostopSettings);
-    console.log(`${autostopSettings.unit_value},${calculatedUnit}`);
+    // console.log(`${autostopSettings.unit_value},${calculatedUnit}`);
 
     if (autostopSettings.unit_value && autostopSettings.isUnitChecked === true) {
         if(autostopSettings.unit_value <= calculatedUnit){
             console.log(`Charger ${uniqueIdentifier} stop initiated - auto stop unit`);
-            const ip = await getIpAndupdateUser(uniqueIdentifier);
-            const result = await chargerStopCall(uniqueIdentifier, ip);
+            const result = await Chargercontrollers.chargerStopCall(uniqueIdentifier, connectorId );
             if (result === true) {
                 console.log(`AutoStop unit: Charger Stopped !`);
             } else {
@@ -599,43 +847,272 @@ async function autostop_unit(firstMeterValues,lastMeterValues,autostopSettings,u
         }
     }
 
-    console.log(`${lastEnergy} - ${startEnergy} - ${result}`);
 }
 
-async function autostop_price(firstMeterValues,lastMeterValues,autostopSettings,uniqueIdentifier){
+async function calculatePrice(unit, uniqueIdentifier) {
+    const db = await connectToDatabase();
+    const chargerDetailsCollection = db.collection('charger_details');
+    const financeDetailsCollection = db.collection('finance_details');
 
+    // Fetch the unit price and finance details from the charger_details table
+    const chargerDetails = await chargerDetailsCollection.findOne({ charger_id: uniqueIdentifier });
+
+    if (chargerDetails && chargerDetails.finance_id !== null) {
+        const finance_id = chargerDetails.finance_id;
+        const financeDetails = await financeDetailsCollection.findOne({ finance_id: finance_id });
+        
+        if (!financeDetails) {
+            throw new Error(`Finance details for finance_id ${finance_id} not found.`);
+        }
+
+        const pricePerUnit = financeDetails.eb_charges; // Fetch the unit price from the database
+
+        // Calculate the total percentage of the various charges
+        const totalPercentage = [
+            financeDetails.app_charges,
+            financeDetails.other_charges,
+            financeDetails.parking_charges,
+            financeDetails.rent_charges,
+            financeDetails.open_a_eb_charges,
+            financeDetails.open_other_charges
+        ].reduce((sum, charge) => sum + parseFloat(charge), 0);
+
+        // Calculate the final price
+        const price = unit * pricePerUnit;
+        const finalPrice = price + (price * totalPercentage / 100);
+        return finalPrice;
+    } else {
+        throw new Error(`Charger with ID ${uniqueIdentifier} not found or finance details not defined.`);
+    }
+}
+
+async function UpdateCommissionToWallet(sessionPrice, uniqueIdentifier) {
+    const db = await connectToDatabase();
+    const chargerDetailsCollection = db.collection('charger_details');
+    const ResellerDetailsCollection = db.collection('reseller_details');
+    const ClientDetailsCollection = db.collection('client_details');
+    const AssociationDetailsCollection = db.collection('association_details');
+
+    // Fetch charger details
+    const chargerDetails = await chargerDetailsCollection.findOne({ charger_id: uniqueIdentifier });
+
+    if (!chargerDetails) {
+        throw new Error(`Charger with ID ${uniqueIdentifier} not found.`);
+    }
+
+    // Extract commission percentages
+    const resellerCommissionPercentage = parseFloat(chargerDetails.reseller_commission);
+    const clientCommissionPercentage = parseFloat(chargerDetails.client_commission);
+
+    // Calculate commissions
+    const resellerCommission = (sessionPrice * resellerCommissionPercentage) / 100;
+    const clientCommission = (sessionPrice * clientCommissionPercentage) / 100;
+
+    // Update reseller wallet
+    if (chargerDetails.assigned_reseller_id) {
+        const reseller_id = chargerDetails.assigned_reseller_id;
+        await updateWallet(ResellerDetailsCollection, reseller_id, resellerCommission, 'reseller');
+    }
+
+    // Update client wallet
+    if (chargerDetails.assigned_client_id) {
+        const client_id = chargerDetails.assigned_client_id;
+        await updateWallet(ClientDetailsCollection, client_id, clientCommission, 'client');
+    }
+
+    // Update association wallet with total commission (reseller + client)
+    if (chargerDetails.assigned_association_id) {
+        const association_id = chargerDetails.assigned_association_id;
+        const totalCommission = resellerCommission + clientCommission;
+        const AssociationPrice = sessionPrice - totalCommission;
+        await updateWallet(AssociationDetailsCollection, association_id, AssociationPrice, 'association');
+    }
+}
+
+async function updateWallet(collection, id, amount, type) {
+    const walletField = `${type}_wallet`;
+    const updateResult = await collection.updateOne(
+        { [`${type}_id`]: id },
+        { $inc: { [walletField]: amount } }
+    );
+
+    if (updateResult.modifiedCount > 0) {
+        console.log(`${type} wallet updated successfully for ID: ${id}. Amount: ${amount}`);
+    } else {
+        console.log(`Failed to update ${type} wallet for ID: ${id}`);
+    }
+}
+
+
+
+async function autostop_price(firstMeterValues, lastMeterValues, autostopSettings, uniqueIdentifier, connectorId) {
     const startEnergy = firstMeterValues || 0;
     const lastEnergy = lastMeterValues || 0;
-    let unit;
-    
+
+    // Calculate the energy consumed in kWh
     const result = lastEnergy - startEnergy;
-    let calculatedUnit = parseFloat(result / 1000).toFixed(3);
+    const calculatedUnit = parseFloat(result / 1000).toFixed(3);
+    const unit = isNaN(calculatedUnit) ? 0 : calculatedUnit;
 
-    if (calculatedUnit === null || isNaN(calculatedUnit)) {
-        unit = 0;
-    } else {
-        unit = calculatedUnit;
-    }
-    console.log(`Unit: ${unit}`);
-    const sessionPrice = await calculatePrice(unit, uniqueIdentifier);
-    const formattedSessionPrice = isNaN(sessionPrice) || sessionPrice === 'NaN' ? 0 : parseFloat(sessionPrice).toFixed(2);
-    
 
-    console.log(`${autostopSettings.price_value} - ${formattedSessionPrice}`);
+    // Calculate the session price
+    try {
+        const sessionPrice = await calculatePrice(unit, uniqueIdentifier);
+        const formattedSessionPrice = isNaN(sessionPrice) || sessionPrice === 'NaN' ? 0 : parseFloat(sessionPrice).toFixed(2);
 
-    if (autostopSettings.price_value && autostopSettings.isPriceChecked === true) {
-        if(autostopSettings.price_value <= formattedSessionPrice){
-            console.log(`Charger ${uniqueIdentifier} stop initiated - auto stop price`);
-            const ip = await getIpAndupdateUser(uniqueIdentifier);
-            const result = await chargerStopCall(uniqueIdentifier, ip);
-            if (result === true) {
-                console.log(`AutoStop price: Charger Stopped !`);
-            } else {
-                console.log(`Error: ${result}`);
+
+        // Update commission to wallet
+        try {
+            await UpdateCommissionToWallet(sessionPrice, uniqueIdentifier);
+            console.log('Commission updated to wallet successfully');
+        } catch (error) {
+            console.log('Failed to update commission to wallet:', error);
+        }
+
+        // Check if the auto stop conditions are met
+        if (autostopSettings.price_value && autostopSettings.isPriceChecked === true) {
+            if (autostopSettings.price_value <= formattedSessionPrice) {
+                console.log(`Charger ${uniqueIdentifier} stop initiated - auto stop price`);
+                const result = await chargerStopCall(uniqueIdentifier, connectorId);
+                if (result === true) {
+                    console.log(`AutoStop price: Charger Stopped!`);
+                } else {
+                    console.log(`Error: ${result}`);
+                }
             }
         }
+    } catch (error) {
+        console.log('Failed to calculate session price:', error);
     }
 }
+
+
+const insertSocketGunConfig = async (uniqueIdentifier, chargePointModel) => {
+    const connectors = chargePointModel.split('- ')[1];
+    const connectorTypes = {};
+    let currentConnectorIndex = 1; // Use a single index to correctly track connector numbers
+
+    // Parse the connector types correctly
+    for (let i = 0; i < connectors.length; i += 2) {
+        const type = connectors[i + 1];
+
+        if (type === 'S') {
+            connectorTypes[`connector_${currentConnectorIndex}_type`] = 1; // 1 for Socket
+
+        } else if (type === 'G') {
+            connectorTypes[`connector_${currentConnectorIndex}_type`] = 2; // 2 for Gun
+
+        }
+
+        currentConnectorIndex++; // Increment the connector index after each iteration
+    }
+
+    console.log("Final ConnectorTypes:", connectorTypes);
+
+    const socketGunConfig = {
+        charger_id: uniqueIdentifier,
+        ...connectorTypes,
+        created_date: new Date(),
+        modified_date: null
+    };
+
+    const db = await connectToDatabase();
+    const existingConfig = await db.collection('socket_gun_config').findOne({ charger_id: uniqueIdentifier });
+
+    if (existingConfig) {
+        await db.collection('socket_gun_config').updateOne(
+            { charger_id: uniqueIdentifier },
+            {
+                $set: {
+                    ...connectorTypes,
+                    modified_date: new Date()
+                }
+            }
+        );
+        console.log(`ChargerID: ${uniqueIdentifier} - Socket/Gun configuration updated successfully.`);
+    } else {
+        await db.collection('socket_gun_config').insertOne(socketGunConfig);
+        console.log(`ChargerID: ${uniqueIdentifier} - Socket/Gun configuration inserted successfully.`);
+    }
+
+    const chargerDetails = {
+        charger_id: uniqueIdentifier,
+        created_date: new Date(),
+    };
+
+    // Dynamically create the projection fields based on connector IDs
+    const totalConnectors = Object.keys(connectorTypes).length; // Get total number of connectors based on the parsed connector types
+    let projection = { charger_id: 1 };
+    for (let i = 1; i <= totalConnectors; i++) {
+        projection[`current_or_active_user_for_connector_${i}`] = 1;
+        projection[`tag_id_for_connector_${i}`] = 1;
+        projection[`transaction_id_for_connector_${i}`] = 1;
+        projection[`transaction_id_for_connector_${i}_in_use`] = 1;
+
+    }
+
+    
+    const existingChargerDetails = await db.collection('charger_details').findOne(
+        { charger_id: uniqueIdentifier },
+        { projection }
+    );
+
+
+    if (!existingChargerDetails) {
+        // If no existing charger details, insert new details
+        for (let i = 1; i <= totalConnectors; i++) {
+            chargerDetails[`tag_id_for_connector_${i}`] = null; 
+            chargerDetails[`tag_id_for_connector_${i}_in_use`] = null;
+            chargerDetails[`transaction_id_for_connector_${i}`] = null;
+            chargerDetails[`current_or_active_user_for_connector_${i}`] = null;
+        }
+
+        const result = await db.collection('charger_details').insertOne(chargerDetails);
+        if (result.insertedId) {
+            console.log(`ChargerID: ${uniqueIdentifier} - Charger details inserted successfully.`);
+        } else {
+            console.log(`ChargerID: ${uniqueIdentifier} - Charger details insertion failed.`);
+        }
+    } else {
+        // Initialize missing fields in existingChargerDetails
+        const updateFields = {};
+        for (let i = 1; i <= totalConnectors; i++) {
+            if (!existingChargerDetails.hasOwnProperty(`tag_id_for_connector_${i}`) || existingChargerDetails[`tag_id_for_connector_${i}`] === null) {
+                updateFields[`tag_id_for_connector_${i}`] = null;
+            }
+
+            if (!existingChargerDetails.hasOwnProperty(`tag_id_for_connector_${i}_in_use`) || existingChargerDetails[`tag_id_for_connector_${i}_in_use`] === null) {
+                updateFields[`tag_id_for_connector_${i}_in_use`] = null;
+            }
+
+            if (!existingChargerDetails.hasOwnProperty(`transaction_id_for_connector_${i}`) || existingChargerDetails[`transaction_id_for_connector_${i}`] === null) {
+                updateFields[`transaction_id_for_connector_${i}`] = null;
+            }
+
+            if (!existingChargerDetails.hasOwnProperty(`current_or_active_user_for_connector_${i}`) || existingChargerDetails[`current_or_active_user_for_connector_${i}`] === null) {
+                updateFields[`current_or_active_user_for_connector_${i}`] = null;
+            }
+        }
+
+        if (Object.keys(updateFields).length > 0) {
+            const result = await db.collection('charger_details').updateOne(
+                { charger_id: uniqueIdentifier },
+                { $set: updateFields }
+            );
+            if (result.modifiedCount > 0) {
+                console.log(`ChargerID: ${uniqueIdentifier} - Charger details updated successfully.`);
+            } else {
+                console.log(`ChargerID: ${uniqueIdentifier} - Charger details update failed.`);
+            }
+        } else {
+            console.log(`ChargerID: ${uniqueIdentifier} - No fields to update.`);
+        }
+    }
+};
+
+
+
+
 
 module.exports = {  savePaymentDetails, 
                     getIpAndupdateUser, 
@@ -656,4 +1133,6 @@ module.exports = {  savePaymentDetails,
                     captureMetervalues,
                     autostop_unit,
                     autostop_price,
+                    insertSocketGunConfig,
+                    NullTagIDInStatus
                 };

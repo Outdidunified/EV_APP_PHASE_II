@@ -1,20 +1,23 @@
 const logger = require('./logger');
 const { connectToDatabase } = require('./db');
-const { generateRandomTransactionId, SaveChargerStatus, updateTime, updateCurrentOrActiveUserToNull,handleChargingSession,getUsername , updateChargerDetails, checkChargerIdInDatabase, checkChargerTagId, checkAuthorization, calculateDifference, UpdateInUse, getAutostop, captureMetervalues, autostop_unit,autostop_price} = require('./functions');
+const {
+    generateRandomTransactionId, SaveChargerStatus, updateTime, updateCurrentOrActiveUserToNull, handleChargingSession,
+    getUsername, updateChargerDetails, checkChargerIdInDatabase, checkChargerTagId, checkAuthorization, calculateDifference,
+    UpdateInUse, getAutostop, captureMetervalues, autostop_unit, autostop_price, insertSocketGunConfig, NullTagIDInStatus
+} = require('./functions');
 const Chargercontrollers = require("./src/ChargingSession/controllers.js");
 
-const PING_INTERVAL = 60000; // 30 seconds ping interval
+const PING_INTERVAL = 60000; // 60 seconds ping interval
 
 connectToDatabase();
-
 
 const getUniqueIdentifierFromRequest = async (request, ws) => {
     const urlParts = request.url.split('/');
     const firstPart = urlParts[1];
     const secondPart = urlParts[2];
     const thirdPart = urlParts[3];
-
     const identifier = urlParts.pop();
+
     if ((firstPart === 'EvPower' && secondPart === 'websocket' && thirdPart === 'CentralSystemService') ||
         (firstPart === 'steve' && secondPart === 'websocket' && thirdPart === 'CentralSystemService') ||
         (firstPart === 'OCPPJ')) {
@@ -57,10 +60,8 @@ const getUniqueIdentifierFromRequest = async (request, ws) => {
     }
 };
 
-
 const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, ClientConnections, clients, OCPPResponseMap, meterValuesMap, sessionFlags, charging_states, startedChargingSet, chargingSessionID) => {
     wss.on('connection', async (ws, req) => {
-        // Initialize the isAlive property to true
         ws.isAlive = true;
         const uniqueIdentifier = await getUniqueIdentifierFromRequest(req, ws); // Await here
         if (!uniqueIdentifier) {
@@ -81,7 +82,7 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
         previousResults.set(uniqueIdentifier, null);
         wsConnections.set(uniqueIdentifier, ws);
         ClientConnections.add(ws);
-        clients.set(ws, clientIpAddress);
+        clients.set(ws, uniqueIdentifier);
 
         const db = await connectToDatabase();
         let query = { charger_id: uniqueIdentifier };
@@ -107,26 +108,30 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                     logger.error(`ChargerID: ${uniqueIdentifier} - Error occur while updating in ev_details:`, err);
                 });
 
-            clients.set(ws, clientIpAddress);
+            clients.set(ws, uniqueIdentifier);
         } else {
             console.log(`WebSocket connection established from browser`);
             logger.info(`WebSocket connection established from browser`);
         }
 
-        const getMeterValues = (uniqueIdentifier) => {
-            if (!meterValuesMap.has(uniqueIdentifier)) {
-                meterValuesMap.set(uniqueIdentifier, {});
+
+        const getMeterValues = (key) => {
+            if (!meterValuesMap.has(key)) {
+                meterValuesMap.set(key, {});
             }
-            console.log(meterValuesMap.get(uniqueIdentifier))
-            return meterValuesMap.get(uniqueIdentifier);
+            return meterValuesMap.get(key);
+        };
+
+        const deleteMeterValues = (key) => {
+            if (meterValuesMap.has(key)) {
+                meterValuesMap.delete(key);
+            }
         };
 
         // Function to handle WebSocket messages
         function connectWebSocket() {
             // Event listener for messages from the client
             ws.on('message', async (message) => {
-                // console.log(message)
-                // console.log((message.toString()));
                 const requestData = JSON.parse(message);
                 let WS_MSG = `ChargerID: ${uniqueIdentifier} - ReceivedMessage: ${message}`;
                 logger.info(WS_MSG);
@@ -177,14 +182,16 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                     const requestType = requestData[0];
                     const Identifier = requestData[1];
                     const requestName = requestData[2];
+                    const connectorId = requestData[3].connectorId; // Get the connector ID from the request                
 
-                    if (requestData[2] === "BootNotification") {//BootNotification
+                    const key = `${uniqueIdentifier}_${connectorId}`;
+
+                    if (requestName === "BootNotification") {
                         const data = requestData[3]; // Correctly reference the data object
-                        // Define the schema
                         const schema = {
                             properties: {
                                 chargePointVendor: { type: "string", maxLength: 20 },
-                                chargePointModel: { type: "string", maxLength: 20 },
+                                chargePointModel: { type: "string", maxLength: 50 },
                                 chargePointSerialNumber: { type: "string", maxLength: 25 },
                                 chargeBoxSerialNumber: { type: "string", maxLength: 25 },
                                 firmwareVersion: { type: "string", maxLength: 50 },
@@ -195,18 +202,17 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             },
                             required: ["chargePointVendor", "chargePointModel"]
                         };
-                
-                        // Validation function
+                    
                         function validate(data, schema) {
                             const errors = [];
-                
+                    
                             // Check required fields
                             schema.required.forEach(field => {
                                 if (!data.hasOwnProperty(field)) {
                                     errors.push(`Missing required field: ${field}`);
                                 }
                             });
-                
+                    
                             // Check properties
                             Object.keys(schema.properties).forEach(field => {
                                 if (data.hasOwnProperty(field)) {
@@ -219,50 +225,68 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                     }
                                 }
                             });
-                
+                    
                             return errors;
                         }
-                
-                        const errors = validate(data, schema);
-                
-                        const sendTo = wsConnections.get(uniqueIdentifier);
+                    
+                        function validateChargePointModel(model) {
+                            const errors = [];
+                            const pattern = /^(.*? - )([1-9][SG]){1,}$/;
+                    
+                            if (!pattern.test(model)) {
+                                errors.push(`Invalid chargePointModel format: ${model}`);
+                            }
+                    
+                            return errors;
+                        }
+                    
+                        const errors = validate(data, schema).concat(validateChargePointModel(data.chargePointModel));
+
+                        const sendTo =  wsConnections.get(uniqueIdentifier);
                         const response = [3, requestData[1], {
                             "currentTime": new Date().toISOString(),
                             "interval": 14400
                         }];
-                
+                    
                         if (errors.length === 0) {
-                            // All checks passed, update the database
                             const updateData = {
                                 vendor: data.chargePointVendor,
                                 model: data.chargePointModel,
                                 type: data.meterType,
                                 modified_date: new Date()
                             };
-                
+                    
                             const updateResult = await updateChargerDetails(uniqueIdentifier, updateData);
                             
                             if (updateResult) {
                                 console.log(`ChargerID: ${uniqueIdentifier} - Updated charger details successfully`);
                                 logger.info(`ChargerID: ${uniqueIdentifier} - Updated charger details successfully`);
+                    
+                                const insertSocketGun= await insertSocketGunConfig(uniqueIdentifier, data.chargePointModel);
+                                if (insertSocketGun) {
+                                    console.log(`ChargerID: ${uniqueIdentifier} - insertSocketGunConfig - Updated charger details successfully`);
+                                    logger.info(`ChargerID: ${uniqueIdentifier} - insertSocketGunConfig - Updated charger details successfully`);
+                            
+                                    } else {
+                                        console.error(`ChargerID: ${uniqueIdentifier} - insertSocketGunConfig - Failed to update charger details`);
+                                        logger.error(`ChargerID: ${uniqueIdentifier} - insertSocketGunConfig -- Failed to update charger details`);
+                                    }
                             } else {
                                 console.error(`ChargerID: ${uniqueIdentifier} - Failed to update charger details`);
                                 logger.error(`ChargerID: ${uniqueIdentifier} - Failed to update charger details`);
                             }
-                
-                            // Check the tag_id status
-                            const status = await checkChargerTagId(uniqueIdentifier);
+                    
+                            const status = await checkChargerTagId(uniqueIdentifier, connectorId);
                             response.push({ "status": status });
                         } else {
-                            // Validation failed, send "Rejected" response
-                            response.push({ "status": "Rejected", "errors": errors }); // Add errors to the response for debugging
+                            console.log("status: Rejected")
+                            response.push({ "status": "Rejected", "errors": errors });
                         }
-                
+                    
                         sendTo.send(JSON.stringify(response));
-                    } else if (requestType === 2 && requestName === "StatusNotification") { // StatusNotification
+                    } else if (requestType === 2 && requestName === "StatusNotification") {
                         const data = requestData[3]; // Assuming the actual data is in requestData[3]
                     
-                        // Define the StatusNotificationRequest schema
                         const statusNotificationRequestSchema = {
                             properties: {
                                 connectorId: { type: "integer" },
@@ -309,22 +333,17 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             required: ["connectorId", "errorCode", "status"],
                         };
                     
-                        // Validation function
                         function validate(data, schema) {
                             const errors = [];
-                            // Check required fields
                             schema.required.forEach(field => {
                                 if (!data.hasOwnProperty(field)) {
                                     errors.push(`Missing required field: ${field}`);
                                 }
                             });
                     
-                            // Check properties
                             Object.keys(schema.properties).forEach(field => {
                                 if (data.hasOwnProperty(field)) {
                                     const property = schema.properties[field];
-                    
-                                    // console.log(`Field: ${field}, Expected Type: ${property.type}, Actual Type: ${typeof data[field]}`);
                     
                                     if (property.type === "integer" && !Number.isInteger(data[field])) {
                                         errors.push(`Invalid type for field: ${field}. Expected integer, got ${typeof data[field]}`);
@@ -356,11 +375,19 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             const status = requestData[3].status;
                             const errorCode = requestData[3].errorCode;
                             const vendorErrorCode = requestData[3].vendorErrorCode;
-                            const timestamp = requestData[3].timestamp;
-                
+                            const connectorId = requestData[3].connectorId;
+                            timestamp = requestData[3].timestamp;
+                            const key = `${uniqueIdentifier}_${connectorId}`; // Create a composite key
                             if (status != undefined) {
+                                // Fetch the connector type from socket_gun_config
+                                const socketGunConfig = await db.collection('socket_gun_config').findOne({ charger_id: uniqueIdentifier});
+                                const connectorIdTypeField = `connector_${connectorId}_type`;
+                                const connectorTypeValue = socketGunConfig[connectorIdTypeField];
+
                                 const keyValPair = {};
                                 keyValPair.charger_id = uniqueIdentifier;
+                                keyValPair.connector_id = connectorId;
+                                keyValPair.connector_type = connectorTypeValue; 
                                 keyValPair.charger_status = status;
                                 keyValPair.timestamp = new Date(timestamp);
                                 keyValPair.client_ip = clientIpAddress;
@@ -373,18 +400,20 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                 keyValPair.modified_date = null;
 
                                 const Chargerstatus = JSON.stringify(keyValPair);
-                                await SaveChargerStatus(Chargerstatus);
+                                await SaveChargerStatus(Chargerstatus, connectorId);
                             }
                     
                             if (status === 'Available') {
                                 timeoutId = setTimeout(async () => {
-                                    const result = await updateCurrentOrActiveUserToNull(uniqueIdentifier);
+                                    const result = await updateCurrentOrActiveUserToNull(uniqueIdentifier,connectorId);
                                     if (result === true) {
                                         console.log(`ChargerID ${uniqueIdentifier} - End charging session is updated successfully.`);
                                     } else {
                                         console.log(`ChargerID ${uniqueIdentifier} - End charging session is not updated.`);
                                     }
                                 }, 50000); // 50 seconds delay 
+                                deleteMeterValues(key);
+                                await NullTagIDInStatus(uniqueIdentifier, connectorId);
                             } else {
                                 if (timeoutId !== undefined) {
                                     clearTimeout(timeoutId);
@@ -392,87 +421,40 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                 }
                             }
                     
+                    
                             if (status === 'Preparing') {
-                                sessionFlags.set(uniqueIdentifier, 0);
-                                charging_states.set(uniqueIdentifier, false);
-                                startedChargingSet.delete(uniqueIdentifier);
+                                sessionFlags.set(key, 0);
+                                charging_states.set(key, false);
+                                deleteMeterValues(key);
+                                await NullTagIDInStatus(uniqueIdentifier, connectorId);
                             }
                     
-                            if (status === 'Charging' && !startedChargingSet.has(uniqueIdentifier)) {
-                                sessionFlags.set(uniqueIdentifier, 1);
-                                charging_states.set(uniqueIdentifier, true);
+                            if (status == 'Charging' && !startedChargingSet.has(key)) {
+                                sessionFlags.set(key, 1);
+                                charging_states.set(key, true);
                                 StartTimestamp = timestamp;
-                                startedChargingSet.add(uniqueIdentifier);
+                                startedChargingSet.add(key);
                                 GenerateChargingSessionID = generateRandomTransactionId();
-                                chargingSessionID.set(uniqueIdentifier, GenerateChargingSessionID);
+                                chargingSessionID.set(key, GenerateChargingSessionID);
                             }
-                    
-                            if ((status === 'SuspendedEV') && (charging_states.get(uniqueIdentifier) === true)) {
-                                sessionFlags.set(uniqueIdentifier, 1);
+
+                            if ((status === 'SuspendedEV' || status === 'Faulted') && (charging_states.get(key) == true)) {
+                                sessionFlags.set(key, 1);
                                 StopTimestamp = timestamp;
-                                charging_states.set(uniqueIdentifier, false);
-                                startedChargingSet.delete(uniqueIdentifier);
-                            }
-                    
-                            if ((status === 'Finishing') && (charging_states.get(uniqueIdentifier) === true)) {
-                                sessionFlags.set(uniqueIdentifier, 1);
-                                StopTimestamp = timestamp;
-                                charging_states.set(uniqueIdentifier, false);
-                                startedChargingSet.delete(uniqueIdentifier);
-                            }
-                    
-                            if ((status === 'Faulted') && (charging_states.get(uniqueIdentifier) === true)) {
-                                sessionFlags.set(uniqueIdentifier, 1);
-                                StopTimestamp = timestamp;
-                                charging_states.set(uniqueIdentifier, false);
-                                startedChargingSet.delete(uniqueIdentifier);
+                                charging_states.set(key, false);
+                                startedChargingSet.delete(key);
+                                deleteMeterValues(key);
                             }
                 
-
-                            if (sessionFlags.get(uniqueIdentifier) == 1) {
-                                let  unit;
-                                let sessionPrice;
-                                const meterValues = getMeterValues(uniqueIdentifier);
-                                console.log(`meterValues: ${meterValues.firstMeterValues} && ${meterValues.lastMeterValues}`);
-                                if (meterValues.firstMeterValues && meterValues.lastMeterValues) {
-                                    ({ unit, sessionPrice } = await calculateDifference(meterValues.firstMeterValues, meterValues.lastMeterValues,uniqueIdentifier));
-                                    console.log(`Energy consumed during charging session: ${unit} Unit's - Price: ${sessionPrice}`);
-                                    meterValues.firstMeterValues = undefined;
-                                } else {
-                                    console.log("StartMeterValues or LastMeterValues is not available.");
-                                }
-                                const user = await getUsername(uniqueIdentifier);
-                                const startTime = StartTimestamp;
-                                const stopTime = StopTimestamp;                            
-                                
-                                await handleChargingSession(uniqueIdentifier, startTime, stopTime, unit, sessionPrice, user, chargingSessionID.get(uniqueIdentifier));
-                                
-                                if (charging_states.get(uniqueIdentifier) == false) {
-                                    const result = await updateCurrentOrActiveUserToNull(uniqueIdentifier);
-                                    chargingSessionID.delete(uniqueIdentifier);
-                                    if (result === true) {
-                                        console.log(`ChargerID ${uniqueIdentifier} Stop - End charging session is updated successfully.`);
-                                    } else {
-                                        console.log(`ChargerID ${uniqueIdentifier} - End charging session is not updated.`);
-                                    }
-                                } else {
-                                    console.log('End charging session is not updated - while stop only it will work');
-                                }
-    
-                                StartTimestamp = null;
-                                StopTimestamp = null;
-                                sessionFlags.set(uniqueIdentifier, 0);
-                            }
-    
                         } else {
                             response[2] = { errors: errors };
                             sendTo.send(JSON.stringify(response));
                         }
-                    } else if (requestType === 2 && requestName === "Heartbeat") {//Heartbeat
+                    } else if (requestType === 2 && requestName === "Heartbeat") {
                         const sendTo = wsConnections.get(uniqueIdentifier);
                         const response = [3, Identifier, { "currentTime": formattedDate }];
                         sendTo.send(JSON.stringify(response));
-                        const result = await updateTime(uniqueIdentifier);
+                        const result = await updateTime(uniqueIdentifier, undefined);
                         currentVal.set(uniqueIdentifier, result);
                         if (currentVal.get(uniqueIdentifier) === true) {
                             if (previousResults.get(uniqueIdentifier) === false) {
@@ -481,9 +463,8 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             }
                         }
                         previousResults.set(uniqueIdentifier, result);
-                    } else if (requestType === 2 && requestName === "Authorize") {//Authorize
+                    } else if (requestType === 2 && requestName === "Authorize") {
                         const data = requestData[3]; 
-                        // Define the schema
                         const schema = {
                             properties: {
                                 idTag: { type: "string", maxLength: 20 },
@@ -491,18 +472,15 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             required: ["idTag"]
                         };
                 
-                        // Validation function
                         function validate(data, schema) {
                             const errors = [];
                 
-                            // Check required fields
                             schema.required.forEach(field => {
                                 if (!data.hasOwnProperty(field)) {
                                     errors.push(`Missing required field: ${field}`);
                                 }
                             });
                 
-                            // Check properties
                             Object.keys(schema.properties).forEach(field => {
                                 if (data.hasOwnProperty(field)) {
                                     const property = schema.properties[field];
@@ -521,7 +499,8 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                         const errors = validate(data, schema);
                 
                         const idTag = requestData[3].idTag;
-                        const { status, expiryDate } = await checkAuthorization(uniqueIdentifier, idTag);
+                        const { status, expiryDate, connectorId } = await checkAuthorization(uniqueIdentifier, idTag);
+                        console.log("AuthStatus:" , status);
                         const sendTo = wsConnections.get(uniqueIdentifier);
                 
                         if (errors.length === 0) {
@@ -532,7 +511,26 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             }else{
                                 response = [3, Identifier, 
                                     { "idTagInfo": { "status": status,
-                                                    "expiryDate": expiryDate || new Date().toISOString() } }];
+                                                    "expiryDate": expiryDate || new Date().toISOString()} }];
+                                try {
+                                    if (status) {
+                                        let AuthData = [
+                                            2,
+                                            "lyw5bpqwo7ehtwzi",
+                                            "StatusNotification",
+                                            {
+                                                connectorId: connectorId,
+                                                errorCode: "NoError",
+                                                TagIDStatus: status, 
+                                                timestamp: new Date().toISOString()
+                                            }
+                                        ];
+                                        await broadcastMessage(uniqueIdentifier, AuthData, ws);
+                                        console.log('AuthData successfully broadcasted:');
+                                    }
+                                } catch (error) {
+                                    console.error('Error broadcasting AuthData:', error);
+                                } 
                             }
                             
                             sendTo.send(JSON.stringify(response));
@@ -542,39 +540,31 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             sendTo.send(JSON.stringify(response));
                             return;
                         }
-
-                    } else if (requestType === 2 && requestName === "StartTransaction") {//StartTransaction
-                        const data = requestData[3]; // Extract the data for validation
-                    
-                        // Define schema
+                    } else if (requestType === 2 && requestName === "StartTransaction") {
+                        const data = requestData[3];
                         const startTransactionRequestSchema = {
                             properties: {
                                 connectorId: { type: "integer" },
                                 idTag: { type: "string", maxLength: 20 },
-                                meterStart: { type: "integer" },
+                                meterStart: { type: "number" },
                                 reservationId: { type: "integer" },
                                 timestamp: { type: "string", format: "date-time" }
                             },
                             required: ["connectorId", "idTag", "meterStart", "timestamp"]
                         };
                     
-                        // Validation function
                         function validate(data, schema) {
                             const errors = [];
                     
-                            // Check required fields
                             schema.required.forEach(field => {
                                 if (!data.hasOwnProperty(field)) {
                                     errors.push(`Missing required field: ${field}`);
                                 }
                             });
                     
-                            // Check properties
                             Object.keys(schema.properties).forEach(field => {
                                 if (data.hasOwnProperty(field)) {
                                     const property = schema.properties[field];
-                    
-                                    // console.log(`Field: ${field}, Expected Type: ${property.type}, Actual Type: ${typeof data[field]}`);
                     
                                     if (property.type === "integer" && !Number.isInteger(data[field])) {
                                         errors.push(`Invalid type for field: ${field}. Expected integer, got ${typeof data[field]}`);
@@ -596,36 +586,103 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                         }
                     
                         let transId;
-                        let isChargerStated = false;
+                        let update;
+                        let isChargerStarted = false;
                         const generatedTransactionId = generateRandomTransactionId();
+                        console.log(generatedTransactionId)
                         const idTag = requestData[3].idTag;
+                        const connectorId = requestData[3].connectorId;
                         const sendTo = wsConnections.get(uniqueIdentifier);
                         const requestErrors = validate(data, startTransactionRequestSchema);
-                    
+
+    
                         if (requestErrors.length === 0) {
                             const { status, expiryDate } = await checkAuthorization(uniqueIdentifier, idTag);
-                            await db.collection('charger_details').findOneAndUpdate({ charger_id: uniqueIdentifier }, { $set: { transaction_id: generatedTransactionId } }, { returnDocument: 'after' })
-                            .then(async updatedDocument => {
-                                transId = updatedDocument.transaction_id;
+                            const updateField = `transaction_id_for_connector_${connectorId}`;
+                            //const connectorTagIdInUseField = `tag_id_for_connector_${connectorId}_in_use`;
+
+                            try {
+                                 // Generate the field name for the tag_id based on connector_id
+                                const connectorTagIdField = `tag_id_for_connector_${connectorId}`;
+                                const connectorTagIdInUseField = `tag_id_for_connector_${connectorId}_in_use`;
+
+                                // // Update the charger_details with the tag_id for the specific connector
+                                // const updateResult = db.collection('charger_details').findOneAndUpdate(
+                                //     { charger_id: uniqueIdentifier },
+                                //     { 
+                                //         $set: { 
+                                //             [connectorTagIdField]: idTag,
+                                //             [connectorTagIdInUseField]: true 
+                                //         } 
+                                //     }
+                                // );
+
+                                // console.log(updateResult);
+
+                                // if (updateResult.matchedCount === 0) {
+                                //     return res.status(404).json({ message: 'Charger ID not found in the charger_details table.' });
+                                // } else if (updateResult.modifiedCount === 0) {
+                                //     return res.status(500).json({ message: 'Failed to update the charger details with the tag ID.' });
+                                // }
+
+
+                                const result = await db.collection('charger_details').findOneAndUpdate(
+                                    { charger_id: uniqueIdentifier },
+                                    { $set: { [updateField]: generatedTransactionId, 
+                                                [connectorTagIdInUseField]: true,
+                                                [connectorTagIdField]:  idTag
+                                    } },
+                                    { returnDocument: 'after' }
+                                );
+                                update = result;
+                                if (update) {
+                                    transId = update[updateField];
                     
-                                const response = [3, Identifier, {
-                                    "transactionId": transId,
-                                    "idTagInfo": {
-                                        "expiryDate": expiryDate || new Date().toISOString(),
-                                        "parentIdTag": "PARENT12345",
-                                        "status": status
+                                    const response = [3, Identifier, {
+                                        "transactionId": transId,
+                                        "idTagInfo": {
+                                            // "expiryDate": expiryDate || new Date().toISOString(),
+                                            "parentIdTag": "PARENT12345",
+                                            "status": status
+                                        }
+                                    }];
+                    
+                                    sendTo.send(JSON.stringify(response));
+
+
+                                    if (status === "Accepted") {
+                                        isChargerStarted = true;
                                     }
-                                }];
-                                sendTo.send(JSON.stringify(response));
-                                await UpdateInUse(idTag ,true);
-                                if(status === "Accepted"){
-                                    isChargerStated = true;
+                    
+                                    if (isChargerStarted) {
+                                        const user = await getUsername(uniqueIdentifier, connectorId, idTag);
+                                        const autostop = await getAutostop(user);
+                    
+                                        if (autostop.time_value && autostop.isTimeChecked) {
+                                            const autostopTimeInSeconds = autostop.time_value * 60 * 1000; // Convert minutes to milliseconds
+                    
+                                            // Start the timeout and store the reference
+                                            autoStopTimer = setTimeout(async () => {
+                                                console.log('Calling stop route after autostop_time for user:', user);
+                                                const result = await Chargercontrollers.chargerStopCall(uniqueIdentifier, connectorId);
+                                                if (result === true) {
+                                                    console.log(`AutoStop timer: Charger Stopped!`);
+                                                } else {
+                                                    console.log(`Error: ${result}`);
+                                                }
+                                            }, autostopTimeInSeconds);
+                                        } else {
+                                            console.error("AutoStop not enabled or configured!");
+                                        }
+                                    }
+                                } else {
+                                    throw new Error('Update operation failed. No document was updated.');
                                 }
-                            }).catch(error => {
-                                isChargerStated = false;
+                            } catch (error) {
+                                isChargerStarted = false;
                                 console.error(`${uniqueIdentifier}: Error executing while updating transactionId:`, error);
                                 logger.error(`${uniqueIdentifier}: Error executing while updating transactionId:`, error);
-                            });
+                            }
                         } else {
                             console.error('Invalid StartTransactionRequest frame:', requestErrors);
                             const response = [3, Identifier, {
@@ -635,273 +692,182 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                 }
                             }];
                             sendTo.send(JSON.stringify(response));
-                            isChargerStated = false;
+                            isChargerStarted = false;
                             return;
                         }
-
-                        if(isChargerStated === true){
-
-                            const user = await getUsername(uniqueIdentifier);
-                            const autostop = await getAutostop(user);
-
-                            if (autostop.time_value && autostop.isTimeChecked === true) {
-                                const autostopTimeInSeconds = autostop.time_value * 60 * 1000; // Convert minutes to seconds
-                                // Start the timeout and store the reference
-                                autoStopTimer = setTimeout(async () => {                
-                                    console.log('Calling stop route after autostop_time for user:', user);
-                                    const result = await Chargercontrollers.chargerStopCall(uniqueIdentifier);
-
-                                    if (result === true) {
-                                        console.log(`AutoStop timer: Charger Stopped !`);
-                                    } else {
-                                        console.log(`Error: ${result}`);
-                                    }
-
-                                }, autostopTimeInSeconds);
-                            }else{
-                                console.error("AutoStop not enabled !");
-                            }
-                        }
                     } else if (requestType === 2 && requestName === "MeterValues") {
-                        const data = requestData[3]; // Extract the data for validation
-                        const UniqueChargingsessionId = chargingSessionID.get(uniqueIdentifier); // Use the current session ID
+                        const data = requestData[3];
+                    
                         let autostopSettings;
-
+                        const connectorId = requestData[3].connectorId;
+                        const key = `${uniqueIdentifier}_${connectorId}`; // Create a composite key
+                        const UniqueChargingSessionId = chargingSessionID.get(key); // Use the current session ID
+                    
                         const meterValuesSchema = {
                             properties: {
-                                connectorId: {
-                                    type: "integer"
-                                },
-                                transactionId: {
-                                    type: "integer"
-                                },
+                                connectorId: { type: "integer" },
+                                transactionId: { type: "integer" },
                                 meterValue: {
                                     type: "array",
                                     items: {
                                         type: "object",
                                         properties: {
-                                            timestamp: {
-                                                type: "string",
-                                                format: "date-time"
-                                            },
+                                            timestamp: { type: "string", format: "date-time" },
                                             sampledValue: {
                                                 type: "array",
                                                 items: {
                                                     type: "object",
                                                     properties: {
-                                                        value: {
-                                                            type: "string"
-                                                        },
+                                                        value: { type: "string" },
                                                         context: {
                                                             type: "string",
                                                             additionalProperties: false,
                                                             enum: [
-                                                                "Interruption.Begin",
-                                                                "Interruption.End",
-                                                                "Sample.Clock",
-                                                                "Sample.Periodic",
-                                                                "Transaction.Begin",
-                                                                "Transaction.End",
-                                                                "Trigger",
-                                                                "Other"
+                                                                "Interruption.Begin", "Interruption.End", "Sample.Clock", "Sample.Periodic",
+                                                                "Transaction.Begin", "Transaction.End", "Trigger", "Other"
                                                             ]
                                                         },
                                                         format: {
                                                             type: "string",
                                                             additionalProperties: false,
-                                                            enum: [
-                                                                "Raw",
-                                                                "SignedData"
-                                                            ]
+                                                            enum: ["Raw", "SignedData"]
                                                         },
                                                         measurand: {
                                                             type: "string",
                                                             additionalProperties: false,
                                                             enum: [
-                                                                "Energy.Active.Export.Register",
-                                                                "Energy.Active.Import.Register",
-                                                                "Energy.Reactive.Export.Register",
-                                                                "Energy.Reactive.Import.Register",
-                                                                "Energy.Active.Export.Interval",
-                                                                "Energy.Active.Import.Interval",
-                                                                "Energy.Reactive.Export.Interval",
-                                                                "Energy.Reactive.Import.Interval",
-                                                                "Power.Active.Export",
-                                                                "Power.Active.Import",
-                                                                "Power.Offered",
-                                                                "Power.Reactive.Export",
-                                                                "Power.Reactive.Import",
-                                                                "Power.Factor",
-                                                                "Current.Import",
-                                                                "Current.Export",
-                                                                "Current.Offered",
-                                                                "Voltage",
-                                                                "Frequency",
-                                                                "Temperature",
-                                                                "SoC",
-                                                                "RPM"
+                                                                "Energy.Active.Export.Register", "Energy.Active.Import.Register", "Energy.Reactive.Export.Register",
+                                                                "Energy.Reactive.Import.Register", "Energy.Active.Export.Interval", "Energy.Active.Import.Interval",
+                                                                "Energy.Reactive.Export.Interval", "Energy.Reactive.Import.Interval", "Power.Active.Export",
+                                                                "Power.Active.Import", "Power.Offered", "Power.Reactive.Export", "Power.Reactive.Import",
+                                                                "Power.Factor", "Current.Import", "Current.Export", "Current.Offered", "Voltage",
+                                                                "Frequency", "Temperature", "SoC", "RPM"
                                                             ]
                                                         },
                                                         phase: {
                                                             type: "string",
                                                             additionalProperties: false,
                                                             enum: [
-                                                                "L1",
-                                                                "L2",
-                                                                "L3",
-                                                                "N",
-                                                                "L1-N",
-                                                                "L2-N",
-                                                                "L3-N",
-                                                                "L1-L2",
-                                                                "L2-L3",
-                                                                "L3-L1"
+                                                                "L1", "L2", "L3", "N", "L1-N", "L2-N", "L3-N", "L1-L2", "L2-L3", "L3-L1"
                                                             ]
                                                         },
                                                         location: {
                                                             type: "string",
                                                             additionalProperties: false,
-                                                            enum: [
-                                                                "Cable",
-                                                                "EV",
-                                                                "Inlet",
-                                                                "Outlet",
-                                                                "Body"
-                                                            ]
+                                                            enum: ["Cable", "EV", "Inlet", "Outlet", "Body"]
                                                         },
                                                         unit: {
                                                             type: "string",
                                                             additionalProperties: false,
                                                             enum: [
-                                                                "Wh",
-                                                                "kWh",
-                                                                "varh",
-                                                                "kvarh",
-                                                                "W",
-                                                                "kW",
-                                                                "VA",
-                                                                "kVA",
-                                                                "var",
-                                                                "kvar",
-                                                                "A",
-                                                                "V",
-                                                                "K",
-                                                                "Celcius",
-                                                                "Celsius",
-                                                                "Fahrenheit",
-                                                                "Percent"
+                                                                "Wh", "kWh", "varh", "kvarh", "W", "kW", "VA", "kVA", "var", "kvar",
+                                                                "A", "V", "K", "Celcius", "Celsius", "Fahrenheit", "Percent"
                                                             ]
                                                         }
                                                     },
                                                     additionalProperties: false,
-                                                    required: [
-                                                        "value"
-                                                    ]
+                                                    required: ["value"]
                                                 }
                                             }
                                         },
                                         additionalProperties: false,
-                                        required: [
-                                            "timestamp",
-                                            "sampledValue"
-                                        ]
+                                        required: ["timestamp", "sampledValue"]
                                     }
                                 }
                             },
                             additionalProperties: false,
-                            required: [
-                                "connectorId",
-                                "meterValue"
-                            ]
+                            required: ["connectorId", "meterValue"]
                         };
-                        
-                        function validate(data, schema) {
+                    
+                        function validateSchema(data, schema) {
                             const errors = [];
-                        
-                            // Check required fields
-                            schema.required.forEach(field => {
-                                if (!data.hasOwnProperty(field)) {
-                                    errors.push(`Missing required field: ${field}`);
-                                }
-                            });
-                        
-                            // Check properties
+                    
+                            if (!data) {
+                                return ["Data is undefined or null"];
+                            }
+                    
+                            if (schema.required) {
+                                schema.required.forEach(field => {
+                                    if (!data.hasOwnProperty(field)) {
+                                        errors.push(`Missing required field: ${field}`);
+                                    }
+                                });
+                            }
+                    
                             Object.keys(schema.properties).forEach(field => {
                                 if (data.hasOwnProperty(field)) {
                                     const property = schema.properties[field];
                     
-                                    // console.log(`Field: ${field}, Expected Type: ${property.type}, Actual Type: ${typeof data[field]}`);
-                    
                                     if (property.type === "integer" && !Number.isInteger(data[field])) {
                                         errors.push(`Invalid type for field: ${field}. Expected integer, got ${typeof data[field]}`);
+                                    } else if (property.type === "array" && Array.isArray(data[field])) {
+                                        data[field].forEach((item, index) => {
+                                            errors.push(...validateSchema(item, property.items).map(e => `${field}[${index}].${e}`));
+                                        });
+                                    } else if (property.type === "object" && typeof data[field] === 'object') {
+                                        errors.push(...validateSchema(data[field], property).map(e => `${field}.${e}`));
                                     } else if (property.type !== "integer" && typeof data[field] !== property.type) {
                                         errors.push(`Invalid type for field: ${field}. Expected ${property.type}, got ${typeof data[field]}`);
                                     }
-                                    if (property.maxLength && data[field].length > property.maxLength) {
-                                        errors.push(`Field exceeds maxLength: ${field}`);
-                                    }
+                    
                                     if (property.enum && !property.enum.includes(data[field])) {
                                         errors.push(`Invalid value for field: ${field}`);
                                     }
                                 }
                             });
-                        
+                    
                             return errors;
                         }
-                        
-                        const requestErrors = validate(data, meterValuesSchema);
                     
+                        const requestErrors = validateSchema(data, meterValuesSchema);
                         const sendTo = wsConnections.get(uniqueIdentifier);
-                        let response ;
+                        const meterValues = getMeterValues(key);
+                    
+                        let response;
                         if (requestErrors.length === 0) {
-                            response = [3, Identifier , {}];
-
-                            if (!getMeterValues(uniqueIdentifier).firstMeterValues) {
+                            response = [3, Identifier, {}];
+                    
+                            if (!meterValues.firstMeterValues && !meterValues.connectorId) {
                                 console.log('unit/price autostop - new session');
-                                // If not retrieved, retrieve the user and autostopSettings
-                                const user = await getUsername(uniqueIdentifier);
+                                const user = await getUsername(uniqueIdentifier, connectorId);
                                 autostopSettings = await getAutostop(user);
-    
-                                // Mark autostopSettings as retrieved for this device
-                                getMeterValues(uniqueIdentifier).autostopSettings = autostopSettings;
-                                //getMeterValues(uniqueIdentifier).autostopSettingsRetrieved = true;
+                    
+                                meterValues.autostopSettings = autostopSettings;
                             } else {
                                 console.log('unit/price autostop - session updating');
-                                // Retrieve autostopSettings specific to this device
-                                autostopSettings = getMeterValues(uniqueIdentifier).autostopSettings;
+                                autostopSettings = meterValues.autostopSettings;
                             }
-
-                            if (!getMeterValues(uniqueIdentifier).firstMeterValues) {
-                                getMeterValues(uniqueIdentifier).firstMeterValues = await captureMetervalues(Identifier, requestData, uniqueIdentifier, UniqueChargingsessionId);
-                                console.log(`First MeterValues for ${uniqueIdentifier} : ${getMeterValues(uniqueIdentifier).firstMeterValues}`);
-                                if(autostopSettings.isUnitChecked){
-                                    await autostop_unit(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
-                                }else if(autostopSettings.isPriceChecked){
-                                    await autostop_price(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
+                    
+                            if (!meterValues.firstMeterValues && !meterValues.connectorId) {
+                                meterValues.connectorId = connectorId;
+                                meterValues.firstMeterValues = await captureMetervalues(Identifier, requestData, uniqueIdentifier, clientIpAddress, UniqueChargingSessionId, connectorId);
+                                console.log(`First MeterValues for ${uniqueIdentifier} for Connector ${connectorId}: ${meterValues.firstMeterValues}`);
+                                if (autostopSettings.isUnitChecked) {
+                                    await autostop_unit(meterValues.firstMeterValues, meterValues.lastMeterValues, autostopSettings, uniqueIdentifier, connectorId);
+                                } else if (autostopSettings.isPriceChecked) {
+                                    await autostop_price(meterValues.firstMeterValues, meterValues.lastMeterValues, autostopSettings, uniqueIdentifier, connectorId);
                                 }
                             } else {
-                                getMeterValues(uniqueIdentifier).lastMeterValues = await captureMetervalues(Identifier, requestData, uniqueIdentifier, UniqueChargingsessionId);
-                                console.log(`Last MeterValues for ${uniqueIdentifier}  : ${getMeterValues(uniqueIdentifier).lastMeterValues}`);
-                                if(autostopSettings.isUnitChecked){
-                                    await autostop_unit(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
-                                }else if(autostopSettings.isPriceChecked){
-                                    await autostop_price(getMeterValues(uniqueIdentifier).firstMeterValues,getMeterValues(uniqueIdentifier).lastMeterValues,autostopSettings,uniqueIdentifier);
-                                }                       
+                                meterValues.lastMeterValues = await captureMetervalues(Identifier, requestData, uniqueIdentifier, clientIpAddress, UniqueChargingSessionId, connectorId);
+                                console.log(`Last MeterValues for ${uniqueIdentifier} for Connector ${connectorId}: ${meterValues.lastMeterValues}`);
+                                if (autostopSettings.isUnitChecked) {
+                                    await autostop_unit(meterValues.firstMeterValues, meterValues.lastMeterValues, autostopSettings, uniqueIdentifier, connectorId);
+                                } else if (autostopSettings.isPriceChecked) {
+                                    await autostop_price(meterValues.firstMeterValues, meterValues.lastMeterValues, autostopSettings, uniqueIdentifier, connectorId);
+                                }
                             }
-
                         } else {
                             console.error('Invalid MeterValues frame:', requestErrors);
-                            response = [3, Identifier, {
-                                "errors": requestErrors
-                            }];
+                            response = [3, Identifier, { "errors": requestErrors }];
                         }
-
-                        sendTo.send(JSON.stringify(response));
-
-
-                    } else if (requestType === 2 && requestName === "StopTransaction") {//StopTransaction
-                        const data = requestData[3]; // Extract the data for validation
-                        // Define schema
+                    
+                        if (sendTo) {
+                            sendTo.send(JSON.stringify(response));
+                        } else {
+                            console.error('No WebSocket connection found for uniqueIdentifier:', uniqueIdentifier);
+                        }
+                    } else if (requestType === 2 && requestName === "StopTransaction") {
+                        const data = requestData[3];
                         const stopTransactionRequestSchema = {
                             properties: {
                                 idTag: { type: "string", maxLength: 20 },
@@ -963,7 +929,7 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                                             type: "string",
                                                             enum: [
                                                                 "Wh", "kWh", "varh", "kvarh", "W", "kW", "VA", "kVA", "var", "kvar",
-                                                                "A", "V", "K", "Celcius", "Fahrenheit", "Percent"
+                                                                "A", "V", "K", "Celcius", "Celsius", "Fahrenheit", "Percent"
                                                             ]
                                                         }
                                                     },
@@ -977,25 +943,22 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                             },
                             required: ["transactionId", "timestamp", "meterStop"]
                         };
-                        // Validation function
+                    
                         function validate(data, schema) {
                             const errors = [];
                     
-                            // Check required fields
                             schema.required.forEach(field => {
                                 if (!data.hasOwnProperty(field)) {
                                     errors.push(`Missing required field: ${field}`);
                                 }
                             });
                     
-
-                            // Check properties
                             Object.keys(schema.properties).forEach(field => {
                                 if (data.hasOwnProperty(field)) {
                                     const property = schema.properties[field];
                                     const fieldType = typeof data[field];
-
-                                    if (property.type) {
+                    
+                                    if (property.type && field !== 'transactionData') {  // Ignore transactionData type check
                                         if (property.type === 'integer' && !Number.isInteger(data[field])) {
                                             errors.push(`Invalid type for field: ${field}`);
                                         } else if (property.type === 'number' && fieldType !== 'number') {
@@ -1004,7 +967,7 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                             errors.push(`Invalid type for field: ${field}`);
                                         }
                                     }
-
+                    
                                     if (property.maxLength && data[field].length > property.maxLength) {
                                         errors.push(`Field exceeds maxLength: ${field}`);
                                     }
@@ -1018,62 +981,114 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                                         data[field].forEach((item, index) => {
                                             const itemErrors = validate(item, schema.properties[field].items);
                                             if (itemErrors.length > 0) {
-                                                errors.push(`Invalid item at index ${index} in transactionData: ${itemErrors.join(", ")}`);
+                                                // Ignore errors related to sampledValue type
+                                                const filteredErrors = itemErrors.filter(e => !e.includes('Invalid type for field: sampledValue'));
+                                                if (filteredErrors.length > 0) {
+                                                    errors.push(`Invalid item at index ${index} in transactionData: ${filteredErrors.join(", ")}`);
+                                                }
                                             }
                                         });
                                     }
                                 }
                             });
-                                            
+                    
                             return errors;
                         }
+                    
+                        const connectorId = requestData[3].connectorId; // Get the connector ID from the request
                         const idTag = requestData[3].idTag;
-                        const { status, expiryDate } = await checkAuthorization(uniqueIdentifier, idTag);
+                    
+                        const timestamp = requestData[3].timestamp;
                         const sendTo = wsConnections.get(uniqueIdentifier);
                         const requestErrors = validate(data, stopTransactionRequestSchema);
+                        const key = `${uniqueIdentifier}_${connectorId}`; // Create a composite key
+                    
                         let response;
                         if (requestErrors.length === 0) {
+                            const { status, expiryDate } = await checkAuthorization(uniqueIdentifier, idTag);
+                            console.log(status);
                             response = [3, Identifier, {
                                 "idTagInfo": {
-                                    "expiryDate":  expiryDate ||new Date().toISOString() ,
+                                    // "expiryDate": expiryDate || new Date().toISOString(),
                                     "parentIdTag": "PARENT12345",
                                     "status": status
-                                }}
-                            ]; 
+                                }
+                            }];
                         } else {
                             console.error('Invalid StopTransactionRequest frame:', requestErrors);
                             response = [3, Identifier, {
                                 "idTagInfo": {
                                     "status": "Invalid",
-                                    "errors": requestErrors 
-                                }}
-                            ]; 
+                                    "errors": requestErrors
+                                }
+                            }];
                         }
-                        sendTo.send(JSON.stringify(response));
-                        await UpdateInUse(idTag ,false);           
+                        
+                        try {
+                            const result = await sendTo.send(JSON.stringify(response));
+                            
+                            if (result === undefined || result) { 
+                                // The send operation was successful
+                                await UpdateInUse(uniqueIdentifier, idTag, connectorId);
+                                console.log("UpdateInUse executed successfully.");
+                            } else {
+                                throw new Error('Sending message failed.');
+                            }
+                        } catch (error) {
+                            console.error('Error during sending or updating in-use status:', error);
+                            throw error; // Re-throw the error if you want to propagate it further
+                        }
+                        
+                        if (charging_states.get(key) === true) {
+                            sessionFlags.set(key, 1);
+                            StopTimestamp = timestamp;
+                            charging_states.set(key, false);
+                            startedChargingSet.delete(key);
+                        }
+                    
+                        clearTimeout(autoStopTimer);
+                    }
+
+                    if (sessionFlags.get(key) == 1) {
+                        let unit;
+                        let sessionPrice;
+                        const meterValues = getMeterValues(key);
+                        if (meterValues.firstMeterValues !== undefined && meterValues.lastMeterValues !== undefined) {
+                            ({ unit, sessionPrice } = await calculateDifference(meterValues.firstMeterValues, meterValues.lastMeterValues, uniqueIdentifier));
+                            console.log(`Energy consumed during charging session: ${unit} Unit's - Price: ${sessionPrice}`);
+                            deleteMeterValues(key);
+                        } else {
+                            console.log("StartMeterValues or LastMeterValues is not available.");
+                        }
+                        const user = await getUsername(uniqueIdentifier, connectorId);
+                        const startTime = StartTimestamp;
+                        const stopTime = StopTimestamp;
+                        // Fetch the connector type from socket_gun_config
+                        const socketGunConfig = await db.collection('socket_gun_config').findOne({ charger_id: uniqueIdentifier});
+                        const connectorIdTypeField = `connector_${connectorId}_type`;
+                        const connectorTypeValue = socketGunConfig[connectorIdTypeField];
+
+                        await handleChargingSession(uniqueIdentifier, connectorId, startTime, stopTime, unit, sessionPrice, user, chargingSessionID.get(key), connectorTypeValue);
+                
+                        if (charging_states.get(key) == false) {
+                            const result = await updateCurrentOrActiveUserToNull(uniqueIdentifier, connectorId);
+                            chargingSessionID.delete(key);
+                            if (result === true) {
+                                console.log(`ChargerID ${uniqueIdentifier} ConnectorID ${connectorId} Stop - End charging session is updated successfully.`);
+                            } else {
+                                console.log(`ChargerID ${uniqueIdentifier} ConnectorID ${connectorId} - End charging session is not updated.`);
+                            }
+                        } else {
+                            console.log('End charging session is not updated - while stop only it will work');
+                        }
+                
+                        StartTimestamp = null;
+                        StopTimestamp = null;
+                        sessionFlags.set(key, 0);
                     }
                 }
             });
 
-            // // Listen for pong messages to reset the isAlive flag
-            // ws.on('pong', () => {
-            //     ws.isAlive = true;
-            // });
-
-            // // Set up the ping interval
-            // const interval = setInterval(() => {
-            //     // Terminate the connection if the isAlive flag is false
-            //     if (ws.isAlive === false) {
-            //         console.log('Terminating due to no pong response');
-            //         return ws.terminate();
-            //     }
-
-            //     // Set the isAlive flag to false and send a ping
-            //     ws.isAlive = false;
-            //     ws.ping();
-            // }, PING_INTERVAL);
-
-            // Attach the close event to the ws object
             ws.on('close', (code, reason) => {
                 if (code === 1001) {
                     console.error(`ChargerID - ${uniqueIdentifier}: WebSocket connection closed from browser side`);
@@ -1083,38 +1098,30 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                     logger.error(`ChargerID - ${uniqueIdentifier}: WebSocket connection closed with code ${code} and reason: ${reason}`);
                 }
                 ClientConnections.delete(ws);
-                // clearInterval(interval); // Clear the interval when the connection is closed
-                // Attempt to reconnect after a delay
                 setTimeout(() => {
                     connectWebSocket();
                 }, 1000);
             });
 
-            // Add a global unhandled rejection handler
             process.on('unhandledRejection', (reason, promise) => {
                 console.log('Unhandled Rejection at:', promise, 'reason:', reason);
                 logger.info('Unhandled Rejection at:', promise, 'reason:', reason);
             });
 
-            // Event listener for WebSocket errors
             ws.on('error', (error) => {
                 try {
                     if (error.code === 'WS_ERR_EXPECTED_MASK') {
-                        // Handle the specific error
                         console.log(`WebSocket error ${uniqueIdentifier}: MASK bit must be set.`);
                         logger.error(`WebSocket error ${uniqueIdentifier}: MASK bit must be set.`);
-                        // Attempt to reconnect after a delay
                         setTimeout(() => {
                             connectWebSocket();
                         }, 1000);
                     } else {
-                        // Handle other WebSocket errors
                         console.log(`WebSocket error ${uniqueIdentifier}: ${error.message}`);
                         console.error(error.stack);
                         logger.error(`WebSocket error ${uniqueIdentifier}: ${error.message}`);
                     }
                 } catch (err) {
-                    // Log the error from the catch block
                     console.error(`Error in WebSocket error handler: ${err.message}`);
                     logger.error(`Error in WebSocket error handler: ${err.message}`);
                     console.error(error.stack);
@@ -1122,32 +1129,22 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
             });
         }
 
-
-        // Initial websocket connection
         connectWebSocket();
     });
 
-    const broadcastMessage = (DeviceID, message, sender) => {
-        const data = {
-            DeviceID,
-            message,
-        };
-
+    const broadcastMessage = async (DeviceID, message, sender)  => {
+        const data = { DeviceID, message };
         const jsonMessage = JSON.stringify(data);
 
-        // Iterate over each client connected to another_wss and send the message
         ClientWss.clients.forEach(client => {
-            // Check if the client is not the sender and its state is open
             if (client !== sender && client.readyState === WebSocket.OPEN) {
                 client.send(jsonMessage, (error) => {
                     if (error) {
                         console.log(`Error sending message to client: ${error.message}`);
-                        // Handle error as needed
                     }
                 });
             }
         });
-
     };
 };
 

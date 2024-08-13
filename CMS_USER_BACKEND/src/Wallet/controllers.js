@@ -33,8 +33,7 @@ async function savePaymentDetails(data) {
         }
 
         // Update user's wallet
-        const updateResult = await userCollection.updateOne({ email_id: data.email_id }, { $inc: { wallet_bal: parseFloat(data.RechargeAmt) } });
-
+        const updateResult = await userCollection.updateOne({ username: data.user }, { $inc: { wallet_bal: parseFloat(data.RechargeAmt) } });
         if (updateResult.modifiedCount === 1) {
             return true;
         } else {
@@ -66,6 +65,7 @@ async function FetchWalletBalance(req, res) {
             return res.status(404).json({ message: 'User not found or inactive' });
         }
 
+        // return res.status(200).json({ status: 'Success', data: user.wallet_bal });
         return res.status(200).json({ status: 'Success', data: user.wallet_bal });
 
     } catch (error) {
@@ -108,7 +108,6 @@ async function getTransactionDetails(username) {
             });
 
             const finalResult = mergedResult.map(item => ({ status: item.status, amount: item.amount, time: item.time }));
-
             return { success: true, data: finalResult };
         } else {
             return { success: true, data: [], message: 'No Record Found !' };

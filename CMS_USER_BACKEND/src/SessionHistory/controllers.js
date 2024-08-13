@@ -13,8 +13,9 @@ async function getChargingSessionDetails(req, res) {
         const db = await database.connectToDatabase();
         const Collection = db.collection('device_session_details');
 
+        // Fetch sessions in descending order by StopTimestamp
         const result = await Collection.find({ user: username, stop_time: { $ne: null } })
-            .sort({ StopTimestamp: -1 })
+            .sort({ stop_time: -1 })  // Ensure the field used in sort is correct
             .toArray();
 
         if (!result || result.length === 0) {

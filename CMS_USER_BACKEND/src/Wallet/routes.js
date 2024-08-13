@@ -91,7 +91,6 @@ router.all('/pay-return-url', async function (req, res) {
             }).then(async function (response) {
                 const result = await controllers.savePaymentDetails(response.data, user);
                 if (result === true) {
-                    //res.cookie('message', 'Recharge successful');
                     return res.status(200).redirect('/PaymentSuccess');
                 } else {
                     return res.status(400).redirect('/PaymentUnsuccess');
@@ -145,7 +144,6 @@ router.post('/getTransactionDetails', async function(req, res) {
         }
 
         const { success, data, message } = await controllers.getTransactionDetails(username);
-
         if (success) {
             return res.status(200).json({ value: data });
         } else {

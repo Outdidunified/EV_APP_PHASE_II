@@ -9,10 +9,9 @@ const logger = require('../../logger.js');
 
 //Route to Check charger ID from database
 router.post('/SearchCharger', controllers.searchCharger);
+router.post('/updateConnectorUser', controllers.updateConnectorUser);
 
 //Route to filter charger based on user preference
-//getAvailableChargers
-router.get('/filterChargersWithAvailableStatus', controllers.getAvailableChargers);
 //getRecentSessionDetails
 router.post('/getRecentSessionDetails', controllers.getRecentSessionDetails);
 

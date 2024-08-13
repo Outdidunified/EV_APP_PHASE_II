@@ -56,6 +56,7 @@ initializeWebSocket(webSocketServer, ClientWebSocketServer);
 
 // Define WebSocket server port
 const WS_PORT = process.env.WS_PORT || 8567;
+// const WS_PORT = process.env.WS_PORT || 6060;
 
 // Start the WebSocket server
 webSocketServer.listen(WS_PORT, () => {

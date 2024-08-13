@@ -56,7 +56,6 @@ const authenticate = async (req) => {
 const registerUser = async (req, res, next) => {
     try {
         const { username, password, phone_no, email_id } = req.body;
-
         if (!username || !password || !phone_no || !email_id) {
             const errorMessage = 'Register - Values undefined';
             return res.status(401).json({ message: errorMessage });

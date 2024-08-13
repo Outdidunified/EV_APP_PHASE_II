@@ -1,62 +1,25 @@
 const database = require('../../db');
 const logger = require('../../logger');
+const { wsConnections } = require('../../MapModules.js');
 
-//SEARCH CHARGER
+// Search Charger and Get Configuration
 async function searchCharger(req, res) {
     try {
-        const { searchChargerID: ChargerID, Username: user , user_id} = req.body;
-        
+        const { searchChargerID: ChargerID } = req.body;
         const db = await database.connectToDatabase();
         const evDetailsCollection = db.collection('charger_details');
-        const usersCollection = db.collection('users');
+        const socketGunConfigCollection = db.collection('socket_gun_config');
 
-        // Search for the document in the 'charger_details' collection
-        const chargerDetails = await evDetailsCollection.findOne({ charger_id: ChargerID , status: true });
+        const chargerDetails = await evDetailsCollection.findOne({ charger_id: ChargerID, status: true });
 
         if (!chargerDetails) {
             const errorMessage = 'Device ID not found !';
             return res.status(404).json({ message: errorMessage });
         }
 
-        // Check if current_or_active_user is already set
-        if (chargerDetails.current_or_active_user && user !== chargerDetails.current_or_active_user) {
-            const errorMessage = 'Charger is already in use !';
-            return res.status(400).json({ message: errorMessage });
-        }
+        const socketGunConfig = await socketGunConfigCollection.findOne({ charger_id: ChargerID });
 
-        // Get wallet balance from the 'users' collection
-        const userRecord = await usersCollection.findOne({ user_id: user_id });
-
-        if (!userRecord) {
-            const errorMessage = 'User not found';
-            return res.status(404).json({ message: errorMessage });
-        }
-
-        const walletBalance = userRecord.wallet_bal;
-        ///////
-        if (chargerDetails.charger_accessibility === 1) {
-            if (chargerDetails.AssignedUser !== user) {            
-                const errorMessage = 'Access Denied: You do not have permission to use this private charger.';
-                return res.status(400).json({ message: errorMessage });
-            }
-        } else {
-            // Check if wallet balance is below 100 Rs
-            if (walletBalance < 100) {
-                const errorMessage = 'Your wallet balance is not enough to charge (minimum 100 Rs required)';
-                return res.status(400).json({ message: errorMessage });
-            }
-        }
-        // Update the user field in the chargerDetails
-        chargerDetails.user = user;
-        // Update the document in the 'ev_details' collection
-        const updateResult = await evDetailsCollection.updateOne({ charger_id: ChargerID }, { $set: { current_or_active_user: user } });
-
-        if (updateResult.modifiedCount !== 1) {
-            console.log('Failed to update current_or_active username');
-        }
-
-        // Respond with the charger details
-        res.status(200).json({ status: 'Success'});
+        res.status(200).json({ status: 'Success', socketGunConfig });
 
     } catch (error) {
         console.error('Error searching for charger:', error);
@@ -65,62 +28,200 @@ async function searchCharger(req, res) {
     }
 }
 
-
-
-//FILTER CHARGERS
-//getAvailableChargers
-async function getAvailableChargers(req, res) {
+// Update Connector User
+async function updateConnectorUser(req, res) {
     try {
+        const { searchChargerID: ChargerID, Username: user, user_id, connector_id } = req.body;
         const db = await database.connectToDatabase();
+        const evDetailsCollection = db.collection('charger_details');
+        const usersCollection = db.collection('users');
+        const socketGunConfigCollection = db.collection('socket_gun_config');
         const chargerStatusCollection = db.collection('charger_status');
 
-        // Fetch all chargers where the status is "Available"
-        const availableChargers = await chargerStatusCollection.find({ charger_status: "Available" }).toArray();
+        const chargerDetails = await evDetailsCollection.findOne({ charger_id: ChargerID, status: true });
+        const socketGunConfig = await socketGunConfigCollection.findOne({ charger_id: ChargerID });
 
-        if (availableChargers.length === 0) {
-            return res.status(404).json({ message: 'No chargers with status "Available" found.' });
+        if (!chargerDetails) {
+            const errorMessage = 'Device ID not found!';
+            return res.status(404).json({ message: errorMessage });
         }
 
-        return res.status(200).json({ status: "Success", availableChargers });
+        const connectorField = `current_or_active_user_for_connector_${connector_id}`;
+        if (!chargerDetails.hasOwnProperty(connectorField)) {
+            const errorMessage = 'Invalid connector ID!';
+            return res.status(400).json({ message: errorMessage });
+        }
+
+        if (chargerDetails[connectorField] && user !== chargerDetails[connectorField]) {
+            const errorMessage = 'Connector is already in use!';
+            return res.status(400).json({ message: errorMessage });
+        }
+
+        const userRecord = await usersCollection.findOne({ user_id: user_id });
+
+        if (!userRecord) {
+            const errorMessage = 'User not found';
+            return res.status(404).json({ message: errorMessage });
+        }
+
+        const walletBalance = userRecord.wallet_bal;
+
+        if (chargerDetails.charger_accessibility === 1) {
+            if (chargerDetails.AssignedUser !== user) {
+                const errorMessage = 'Access Denied: You do not have permission to use this private charger.';
+                return res.status(400).json({ message: errorMessage });
+            }
+        } else {
+            if (walletBalance < 100) {
+                const errorMessage = 'Your wallet balance is not enough to charge (minimum 100 Rs required)';
+                return res.status(400).json({ message: errorMessage });
+            }
+        }
+
+        // Update the user field in the chargerDetails
+        let currect_user = {};
+        currect_user[connectorField] = user;
+
+        const connectorIdTypeField = `connector_${connector_id}_type`;
+        const connectorTypeValue = socketGunConfig[connectorIdTypeField];
+        if (connectorTypeValue === 1) { // Assuming 1 stands for 'socket'
+            const fetchChargerStatus = await chargerStatusCollection.findOne({ charger_id: ChargerID, connector_id: connector_id , connector_type: 1});
+
+            if (fetchChargerStatus && fetchChargerStatus.charger_status !== 'Charging' && fetchChargerStatus.charger_status !== 'Preparing') {
+
+                const result = await sendPreparingStatus(wsConnections, ChargerID, connector_id);
+
+                if (!result) {
+                    const errorMessage = 'Device not connected to the server';
+                    return res.status(500).json({ message: errorMessage });
+                }
+            }
+        }
+
+        const updateResult = await evDetailsCollection.updateOne(
+            { charger_id: ChargerID },
+            { $set: currect_user }
+        );
+
+        if (updateResult.modifiedCount !== 1) {
+            console.log('Failed to update current_or_active username for the connector');
+        }
+
+        // Respond with the charger details
+        res.status(200).json({ message: 'Success' });
 
     } catch (error) {
-        console.error('Error fetching available chargers:', error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        console.error('Error updating connector user:', error);
+        const errorMessage = 'Internal Server Error';
+        return res.status(500).json({ message: errorMessage });
     }
 }
 
-//getRecentSessionDetails
+const sendPreparingStatus = async (wsConnections, Identifier, connectorId) => {
+    const id = Identifier;
+    const sendTo = wsConnections.get(Identifier);
+    const db = await database.connectToDatabase();
+    const evDetailsCollection = db.collection('charger_details');
+    const chargerDetails = await evDetailsCollection.findOne({ charger_id: id });
+
+    if (!chargerDetails) {
+        const errorMessage = 'Charger ID not found in the database.';
+        console.error(errorMessage);
+        return false;
+    }
+
+    const vendorId = chargerDetails.vendor; // Fetch vendorId from charger_details collection
+
+    let response;
+    if (connectorId == 1) {
+        response = [2, Identifier, "DataTransfer", {
+            "vendorId": vendorId, // Use fetched vendorId
+            "messageId": "TEST",
+            "data": "Preparing",
+            "connectorId": connectorId,
+        }];
+    }
+
+    if (sendTo) {
+        await sendTo.send(JSON.stringify(response));
+        let WS_MSG = `ChargerID: ${id} - SendingMessage: ${JSON.stringify(response)}`;
+        logger.info(WS_MSG);
+        console.log(WS_MSG);
+        return true;
+    } else {
+        return false;
+    }
+};
+
+// FILTER CHARGERS
+// getRecentSessionDetails
 async function getRecentSessionDetails(req, res) {
     try {
-        const { username } = req.body;
-        if (!username) {
-            const errorMessage = 'ChargerSessionDetails - Username undefined!';
+        const { user_id } = req.body;
+        if (!user_id) {
+            const errorMessage = 'User ID is undefined!';
             return res.status(401).json({ message: errorMessage });
         }
+
         const db = await database.connectToDatabase();
         const collection = db.collection('device_session_details');
+        const chargerDetailsCollection = db.collection('charger_details');
+        const chargerStatusCollection = db.collection('charger_status');
+        const usersCollection = db.collection('users');
+        const financeDetailsCollection = db.collection('finance_details');
+
+        // Fetch the user details to get the username
+        const userRecord = await usersCollection.findOne({ user_id: user_id });
+        if (!userRecord) {
+            const errorMessage = 'User not found';
+            return res.status(404).json({ message: errorMessage });
+        }
+
+        const username = userRecord.username;
 
         // Fetch all charging sessions for the user
         const sessions = await collection.find({ user: username, stop_time: { $ne: null } }).sort({ stop_time: -1 }).toArray();
 
         if (!sessions || sessions.length === 0) {
-            const errorMessage = 'ChargerSessionDetails - No record found!';
+            const errorMessage = 'No Charger entries';
             return res.status(404).json({ message: errorMessage });
         }
 
-        // Filter to get the most recent session per charger_id
-        const recentSessionsByCharger = sessions.reduce((acc, session) => {
-            if (!acc[session.charger_id] || new Date(acc[session.charger_id].stop_time) < new Date(session.stop_time)) {
-                acc[session.charger_id] = session;
+        // Filter to get the most recent session per charger_id, connector_id, and connector_type
+        const recentSessionsByConnector = sessions.reduce((acc, session) => {
+            const key = `${session.charger_id}-${session.connector_id}-${session.connector_type}`;
+            if (!acc[key] || new Date(acc[key].stop_time) < new Date(session.stop_time)) {
+                acc[key] = session;
             }
             return acc;
         }, {});
 
         // Convert the result object to an array
-        const recentSessions = Object.values(recentSessionsByCharger);
+        const recentSessions = Object.values(recentSessionsByConnector);
 
-        // Return the most recent session data for each charger
-        return res.status(200).json({ data: recentSessions });
+        // Join the recent sessions with charger details, charger status, and unit price
+        const detailedSessions = await Promise.all(recentSessions.map(async (session) => {
+            const details = await chargerDetailsCollection.findOne({ charger_id: session.charger_id });
+            const status = await chargerStatusCollection.findOne({ charger_id: session.charger_id, connector_id: session.connector_id });
+
+            // Find the finance ID related to the charger
+            const financeId = details?.finance_id;
+            // Fetch t  he unit price using the finance ID
+            let unitPrice = null;
+            if (financeId) {
+                const financeRecord = await financeDetailsCollection.findOne({ finance_id: financeId });
+                unitPrice = financeRecord ? financeRecord.eb_charges : null;
+            }
+
+            return {
+                ...session,
+                details,
+                status,
+                unit_price: unitPrice // Append the unit price to the session details
+            };
+        }));
+        // Return the most recent session data for each charger and connector
+        return res.status(200).json({ data: detailedSessions });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: 'Internal Server Error' });
@@ -132,7 +233,7 @@ async function getRecentSessionDetails(req, res) {
 module.exports = { 
     //SEARCH CHARGER
     searchCharger,
+    updateConnectorUser,
     //FILTER CHARGERS
-    getAvailableChargers,
     getRecentSessionDetails,
 };

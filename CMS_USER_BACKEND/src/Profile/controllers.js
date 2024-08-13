@@ -14,12 +14,23 @@ async function FetchUserProfile(req, res) {
         
         // Query to fetch the user by user_id
         const user = await usersCollection.findOne({ user_id: user_id , status:true });
-
+        const UserData ={
+            user_id: user.user_id,
+            username: user.username,
+            email_id: user.email_id,
+            phone_no: user.phone_no,
+            password: user.password,
+            autostop_price: user.autostop_price,
+            autostop_time: user.autostop_time,
+            autostop_unit: user.autostop_unit,
+            autostop_price_isChecked: user.autostop_price_is_checked,
+            autostop_time_isChecked: user.autostop_time_is_checked,
+            autostop_unit_isChecked: user.autostop_unit_is_checked
+        }
         if (!user) {
             return res.status(404).json({ message: 'User not found or inactive' });
         }
-
-        return res.status(200).json({ status: 'Success', data: user });
+        return res.status(200).json({ status: 'Success', data: UserData });
         
     } catch (error) {
         logger.error(`Error fetching user: ${error}`);
@@ -28,12 +39,11 @@ async function FetchUserProfile(req, res) {
 }
 // UpdateUserProfile
 async function UpdateUserProfile(req, res, next) {
-    const { user_id, username, phone_no, password } = req.body;
-
+    const { user_id, username, phone_no, current_password, new_password } = req.body;
     try {
         // Validate the input
-        if (!user_id || !username || !phone_no || !password) {
-            return res.status(400).json({ message: 'User ID, Username, Phone Number, and Password are required' });
+        if (!user_id || !username || !phone_no || !current_password || !new_password) {
+            return res.status(400).json({ message: 'User ID, Username, Phone Number, Current Password, and New Password are required' });
         }
 
         const db = await database.connectToDatabase();
@@ -45,11 +55,28 @@ async function UpdateUserProfile(req, res, next) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Convert password to a string if it is not already
-        const passwordString = String(password);
+        // Validate the current password
+        const isCurrentPasswordValid = await bcrypt.compare(current_password, existingUser.password);
+        if (!isCurrentPasswordValid) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(passwordString, 10);
+        // Convert new password to a string if it is not already
+        const newPasswordString = String(new_password);
+
+        // Hash the new password
+        const hashedNewPassword = await bcrypt.hash(newPasswordString, 10);
+
+        // Check if the received data is the same as the existing data
+        const isSameData = (
+            existingUser.username === username &&
+            existingUser.phone_no === phone_no &&
+            await bcrypt.compare(newPasswordString, existingUser.password)
+        );
+
+        if (isSameData) {
+            return res.status(404).json({ message: 'No changes found' });
+        }
 
         // Update the user profile
         const updateResult = await usersCollection.updateOne(
@@ -58,7 +85,7 @@ async function UpdateUserProfile(req, res, next) {
                 $set: {
                     username: username,
                     phone_no: phone_no,
-                    password: hashedPassword,
+                    password: hashedNewPassword,
                     modified_by: username,
                     modified_date: new Date(),
                 }
@@ -68,13 +95,17 @@ async function UpdateUserProfile(req, res, next) {
         if (updateResult.matchedCount === 0) {
             return res.status(500).json({ message: 'Failed to update user profile' });
         }
-        next();        
+
+        return res.status(200).json({ message: 'User profile updated successfully' });
+        
     } catch (error) {
         console.error(error);
         logger.error(`Error updating user profile: ${error}`);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+
+
 //DeActivate User
 async function DeActivateUser(req, res, next) {
     try {

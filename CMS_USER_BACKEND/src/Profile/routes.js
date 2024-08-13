@@ -67,7 +67,7 @@ router.post('/FetchUserProfile',controllers.FetchUserProfile, async (req, res ) 
 router.post('/UpdateUserProfile',controllers.UpdateUserProfile, async (req, res) => {
     try {
         res.status(200).json({ status: 'Success',message: 'User profile updated successfully' });
-    } catch (error) {
+    } catch (error) {x
         console.error('Error in UpdateUserProfile route:', error);
         res.status(500).json({ status: 'Failed', message: 'Failed to update user profile' });
     }
