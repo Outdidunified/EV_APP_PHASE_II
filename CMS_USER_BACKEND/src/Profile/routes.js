@@ -1,26 +1,13 @@
 const express = require('express');
-const auth = require('./auth');
-const database = require('./db');
-const url = require('url');
-const logger = require('./logger');
-var sha256 = require('sha256');
-var uniqid = require('uniqid');
-var axios = require('axios');
-const cors = require('cors');
-
-// Create a router instance
 const router = express.Router();
+const Auth = require("./auth.js")
+const controllers = require("./controllers.js")
 
-// Enable CORS
-router.use(cors());
-
-// Parse URL-encoded bodies
-router.use(express.urlencoded({ extended: true }));
-
+//AUTHENTICATION ROUTES
 // Route to check login credentials
 router.post('/CheckLoginCredentials', async (req, res) => {
     try {
-        const result = await auth.authenticate(req);
+        const result = await Auth.authenticate(req);
 
         if (result.error) {
             return res.status(result.status).json({ message: result.message });
@@ -62,15 +49,32 @@ router.post('/LogoutCheck', async(req, res) => {
         res.status(200).json({ message: 'LoginCheck - error while update' });
     }
 });
-
 // Route to add a new user (Save into database)
-router.post('/RegisterNewUser', auth.registerUser, (req, res) => {
+router.post('/RegisterNewUser', Auth.registerUser, (req, res) => {
     try {
         res.status(200).json({ status: 'Success' , message : "User Registered Successfully"});
     } catch (error) {
         console.error('Error in RegisterNewUser route:', error);
         res.status(500).json({ status: 'Failed', message: 'Failed to RegisterNewUser' });
     }
+});
+
+// PROFILE Route
+// Route to FetchUserProfile 
+router.post('/FetchUserProfile',controllers.FetchUserProfile, async (req, res ) => {
+});
+// Route to UpdateUserProfile 
+router.post('/UpdateUserProfile',controllers.UpdateUserProfile, async (req, res) => {
+    try {
+        res.status(200).json({ status: 'Success',message: 'User profile updated successfully' });
+    } catch (error) {x
+        console.error('Error in UpdateUserProfile route:', error);
+        res.status(500).json({ status: 'Failed', message: 'Failed to update user profile' });
+    }
+});
+// Route to DeleteAccount
+router.post('DeleteAccount', controllers.DeActivateUser, (req, res) => {
+    res.status(200).json({ status: 'Success' ,  message: 'User deactivated successfully' });
 });
 
 

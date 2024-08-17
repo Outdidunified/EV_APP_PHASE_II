@@ -1,13 +1,12 @@
 const bcrypt = require('bcrypt');
-const database = require('./db');
+const database = require('../../db');
 
 const authenticate = async (req) => {
     try {
         const { email_id, password } = req.body;
-
         // Check if email or password is missing
         if (!email_id || !password) {
-            return { error: true, status: 401, message: 'Invalid credentials' };
+            return { error: true, status: 401, message: 'required data not found' };
         }
 
         const db = await database.connectToDatabase();
@@ -57,7 +56,6 @@ const authenticate = async (req) => {
 const registerUser = async (req, res, next) => {
     try {
         const { username, password, phone_no, email_id } = req.body;
-
         if (!username || !password || !phone_no || !email_id) {
             const errorMessage = 'Register - Values undefined';
             return res.status(401).json({ message: errorMessage });
@@ -109,6 +107,8 @@ const registerUser = async (req, res, next) => {
             autostop_time_is_checked: null,
             autostop_unit: null,
             autostop_unit_is_checked: null,
+            tag_id: null,
+            assigned_association: null,
             created_by: username,
             created_date: new Date(),
             modified_by: null,
