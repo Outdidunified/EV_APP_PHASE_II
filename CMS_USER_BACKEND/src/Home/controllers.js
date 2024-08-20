@@ -13,7 +13,12 @@ async function searchCharger(req, res) {
 
         const chargerDetails = await evDetailsCollection.findOne({ charger_id: ChargerID,  status: true });
 
-        if (!chargerDetails && chargerDetails.charger_accessibility === !null) {
+        if(chargerDetails.assigned_association_id === null){
+            const errorMessage = 'Device ID not found !';
+            return res.status(404).json({ message: errorMessage });
+        }
+
+        if (!chargerDetails || chargerDetails.charger_accessibility === !null) {
             const errorMessage = 'Device ID not found !';
             return res.status(404).json({ message: errorMessage });
         }
@@ -271,14 +276,37 @@ async function getRecentSessionDetails(req, res) {
 // FETCH ALL CHARGERS WITH STATUS AND UNIT PRICE
 async function getAllChargersWithStatusAndPrice(req, res) {
     try {
+        const { user_id } = req.body;
+
         const db = await database.connectToDatabase();
+        const userDetailsCollection = db.collection('users');
         const chargerDetailsCollection = db.collection('charger_details');
         const chargerStatusCollection = db.collection('charger_status');
         const financeDetailsCollection = db.collection('finance_details');
 
-        // Fetch all chargers where charger_accessibility is not null
-        const allChargers = await chargerDetailsCollection.find({ charger_accessibility: { $ne: null } }).toArray();
+        // Fetch the user's assigned association
+        const user = await userDetailsCollection.findOne({ user_id: user_id });
 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found or assigned association is missing' });
+        }
+
+        const userAssignedAssociation = user.assigned_association;
+        let allChargers;
+
+        // Fetch all chargers where charger_accessibility is not null and the assigned_association_id matches the user's assigned_association
+        if(userAssignedAssociation === null){
+            allChargers = await chargerDetailsCollection.find({
+                charger_accessibility: { $ne: 2 },
+                assigned_association_id: { $ne: null }
+            }).toArray();
+        }else{
+            allChargers = await chargerDetailsCollection.find({
+                assigned_association_id: userAssignedAssociation,
+                charger_accessibility: { $in: [1, 2] } // This will match documents where charger_accessibility is either 1 or 2
+            }).toArray();
+        }
+        
         // Fetch detailed information for each charger, including its status and unit price
         const detailedChargers = await Promise.all(allChargers.map(async (charger) => {
             const chargerId = charger.charger_id;

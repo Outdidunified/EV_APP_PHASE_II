@@ -40,10 +40,11 @@ async function FetchUserProfile(req, res) {
 // UpdateUserProfile
 async function UpdateUserProfile(req, res, next) {
     const { user_id, username, phone_no, current_password, new_password } = req.body;
+    
     try {
         // Validate the input
-        if (!user_id || !username || !phone_no || !current_password || !new_password) {
-            return res.status(400).json({ message: 'User ID, Username, Phone Number, Current Password, and New Password are required' });
+        if (!user_id || !username || !phone_no || !current_password) {
+            return res.status(400).json({ message: 'User ID, Username, Phone Number, and Current Password are required' });
         }
 
         const db = await database.connectToDatabase();
@@ -61,35 +62,45 @@ async function UpdateUserProfile(req, res, next) {
             return res.status(401).json({ message: 'Current password is incorrect' });
         }
 
-        // Convert new password to a string if it is not already
-        const newPasswordString = String(new_password);
+        let updateFields = {
+            username: username,
+            phone_no: phone_no,
+            modified_by: username,
+            modified_date: new Date(),
+        };
 
-        // Hash the new password
-        const hashedNewPassword = await bcrypt.hash(newPasswordString, 10);
+        // Only update the password if a new password is provided
+        if (new_password) {
+            // Convert new password to a string if it is not already
+            const newPasswordString = String(new_password);
 
-        // Check if the received data is the same as the existing data
-        const isSameData = (
-            existingUser.username === username &&
-            existingUser.phone_no === phone_no &&
-            await bcrypt.compare(newPasswordString, existingUser.password)
-        );
+            // Hash the new password
+            const hashedNewPassword = await bcrypt.hash(newPasswordString, 10);
 
-        if (isSameData) {
-            return res.status(404).json({ message: 'No changes found' });
+            // Include the hashed new password in the update fields
+            updateFields.password = hashedNewPassword;
+
+            // Check if the new data is the same as the existing data
+            const isSameData = (
+                existingUser.username === username &&
+                existingUser.phone_no === phone_no &&
+                await bcrypt.compare(newPasswordString, existingUser.password)
+            );
+
+            if (isSameData) {
+                return res.status(400).json({ message: 'No changes found' });
+            }
+        } else {
+            // Check if the username and phone number are unchanged
+            if (existingUser.username === username && existingUser.phone_no === phone_no) {
+                return res.status(400).json({ message: 'No changes found' });
+            }
         }
 
         // Update the user profile
         const updateResult = await usersCollection.updateOne(
             { user_id: user_id },
-            {
-                $set: {
-                    username: username,
-                    phone_no: phone_no,
-                    password: hashedNewPassword,
-                    modified_by: username,
-                    modified_date: new Date(),
-                }
-            }
+            { $set: updateFields }
         );
 
         if (updateResult.matchedCount === 0) {
@@ -97,13 +108,14 @@ async function UpdateUserProfile(req, res, next) {
         }
 
         return res.status(200).json({ message: 'User profile updated successfully' });
-        
+
     } catch (error) {
         console.error(error);
         logger.error(`Error updating user profile: ${error}`);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+
 
 
 //DeActivate User

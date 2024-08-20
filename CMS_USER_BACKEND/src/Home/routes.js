@@ -15,7 +15,7 @@ router.post('/updateConnectorUser', controllers.updateConnectorUser);
 //getRecentSessionDetails
 router.post('/getRecentSessionDetails', controllers.getRecentSessionDetails);
 
-router.get('/getAllChargersWithStatusAndPrice', controllers.getAllChargersWithStatusAndPrice);
+router.post('/getAllChargersWithStatusAndPrice', controllers.getAllChargersWithStatusAndPrice);
 
 
 //Fetch all action options for OCPPConfig

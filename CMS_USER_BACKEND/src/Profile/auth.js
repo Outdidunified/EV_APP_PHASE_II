@@ -74,8 +74,10 @@ const registerUser = async (req, res, next) => {
                 { email_id: email_id }
             ]
         });
+
         if (existingUser) {
             const errorMessage = 'Username or email already registered';
+            console.log(errorMessage)
             return res.status(403).json({ message: errorMessage });
         }
 

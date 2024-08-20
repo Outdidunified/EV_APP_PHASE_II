@@ -424,6 +424,7 @@ const handleWebSocketConnection = (WebSocket, wss, ClientWss, wsConnections, Cli
                     
                             if (status === 'Preparing') {
                                 sessionFlags.set(key, 0);
+                                startedChargingSet.delete(key);
                                 charging_states.set(key, false);
                                 deleteMeterValues(key);
                                 await NullTagIDInStatus(uniqueIdentifier, connectorId);
